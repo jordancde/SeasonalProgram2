@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.Controller">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <GridPane gridLinesVisible="true" layoutX="-1.0" layoutY="-1.0" prefHeight="708.0" prefWidth="904.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="345.97621154785156" minWidth="10.0" prefWidth="336.05494689941406" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="391.96826171875" minWidth="10.0" prefWidth="232.6220703125" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0787658691406" minWidth="10.0" prefWidth="238.8779296875" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="130.0" minHeight="0.0" prefHeight="96.54334259033203" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="623.0314483642578" minHeight="10.0" prefHeight="611.456657409668" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="62.0" prefWidth="214.0">
+                           <children>
+                              <Label text="Profile:">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <ComboBox fx:id="profileDropdown" prefHeight="27.0" prefWidth="253.0" promptText="Select Profile" />
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Label text="Benchmark:">
+                                 <padding>
+                                    <Insets right="1.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="benchmarkText" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="221.0" promptText="Benchmark Symbol" />
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="294.0" text="Monthly Stats">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="59.0" minWidth="10.0" prefWidth="37.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="86.0" minWidth="10.0" prefWidth="83.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="74.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Start" />
+                              <Label text="End" GridPane.rowIndex="1" />
+                              <HBox prefHeight="28.0" prefWidth="82.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label prefHeight="32.0" prefWidth="34.0" text="Yr" />
+                                    <TextField fx:id="monthlyStatsYearStartText" prefHeight="27.0" prefWidth="63.0" promptText="YYYY" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label prefHeight="40.0" prefWidth="34.0" text="Yr" />
+                                    <TextField fx:id="monthlyStatsYearEndText" prefHeight="27.0" prefWidth="63.0" promptText="YYYY" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label prefHeight="43.0" prefWidth="34.0" text="Mo" />
+                                    <TextField fx:id="monthlyStatsMonthStartText" prefHeight="27.0" prefWidth="50.0" promptText="MM" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label prefHeight="34.0" prefWidth="34.0" text="Mo" />
+                                    <TextField fx:id="monthlyStatsMonthEndText" prefWidth="50.0" promptText="MM" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="275.0" text="Technical Performance" textAlignment="CENTER">
+                           <padding>
+                              <Insets bottom="10.0" />
+                           </padding>
+                        </Label>
+                        <GridPane>
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="39.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="64.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="40.0" prefWidth="34.0" text="Start" />
+                              <Label prefHeight="45.0" prefWidth="34.0" text="End" GridPane.rowIndex="1" />
+                              <TextField fx:id="technicalStartText" promptText="YYYY/MM/DD" GridPane.columnIndex="1" />
+                              <TextField fx:id="technicalEndText" promptText="YYYY/MM/DD" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                     <children>
+                        <HBox prefHeight="75.0" prefWidth="346.0">
+                           <children>
+                              <CheckBox fx:id="selectAllSelect" mnemonicParsing="false" prefHeight="47.0" prefWidth="219.0" text="Select All" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <TableView fx:id="securitiesTable" editable="true" prefHeight="268.0" prefWidth="346.0">
+                          <columns>
+                            <TableColumn fx:id="securitiesTableSelectedColumn" prefWidth="66.88182604312897" text="Selected" />
+                              <TableColumn fx:id="securitiesTableSecurityColumn" prefWidth="268.5000228881836" text="Security" />
+                          </columns>
+                        </TableView>
+                        <HBox prefHeight="26.0" prefWidth="346.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="addSecurityButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Add Security" />
+                              <Button fx:id="addTradeButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Add Trade" />
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                        <TableView id="tradesTable" fx:id="tradesTable" editable="true" prefHeight="352.0" prefWidth="346.0">
+                          <columns>
+                            <TableColumn fx:id="tradesTableLongColumn" prefWidth="43.92914354801178" text="Long" />
+                              <TableColumn fx:id="tradesTableSecurityColumn" prefWidth="100.0" text="Security" />
+                              <TableColumn fx:id="tradesTableEntryColumn" prefWidth="98.0" text="Entry" />
+                              <TableColumn fx:id="tradesTableExitColumn" prefWidth="103.0" text="Exit" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <GridPane prefHeight="392.0" prefWidth="210.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <CheckBox fx:id="lowSelect" mnemonicParsing="false" text="Low" GridPane.rowIndex="3" />
+                              <CheckBox fx:id="gainSelect" mnemonicParsing="false" text="\% Gain" GridPane.rowIndex="5" />
+                              <CheckBox fx:id="highSelect" mnemonicParsing="false" text="High" GridPane.rowIndex="2" />
+                              <CheckBox fx:id="openSelect" mnemonicParsing="false" text="Open" GridPane.rowIndex="1" />
+                              <CheckBox fx:id="volumeSelect" mnemonicParsing="false" text="Volume" GridPane.rowIndex="4" />
+                              <CheckBox fx:id="closeSelect" mnemonicParsing="false" text="Close" />
+                              <CheckBox fx:id="relStrBenchmarkRatioSelect" mnemonicParsing="false" text="Rel. Str. vs. Benchmark Ratio" GridPane.rowIndex="9">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </CheckBox>
+                              <CheckBox fx:id="relStrBenchmarkGainSelect" mnemonicParsing="false" text="Rel. Str. vs. Benchmark % Gain" GridPane.rowIndex="8">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </CheckBox>
+                              <CheckBox fx:id="benchmarkCloseSelect" mnemonicParsing="false" text="Benchmark Close" GridPane.rowIndex="7" />
+                              <CheckBox fx:id="benchmarkGainSelect" mnemonicParsing="false" text="Benchmark % Gain" GridPane.rowIndex="6" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </GridPane>
+                        <Separator prefHeight="1.0" prefWidth="219.0" />
+                        <GridPane prefHeight="399.0" prefWidth="273.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="66.38583374023438" minWidth="10.0" prefWidth="25.22833251953125" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.83853149414062" minWidth="10.0" prefWidth="36.807098388671875" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.53543090820312" minWidth="10.0" prefWidth="163.19290161132812" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="30.385833740234375" minHeight="3.929168701171875" prefHeight="18.81103515625" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <CheckBox fx:id="movAvgSimp1Select" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="56.0" prefWidth="45.0" />
+                              <CheckBox fx:id="movAvgEMA1Select" mnemonicParsing="false" GridPane.rowIndex="2" />
+                              <CheckBox fx:id="movAvgEMA2Select" mnemonicParsing="false" GridPane.rowIndex="3" />
+                              <CheckBox fx:id="movAvgSimpRelBM1Select" mnemonicParsing="false" GridPane.rowIndex="4" />
+                              <CheckBox fx:id="movAvgSimpRelBM2Select" mnemonicParsing="false" GridPane.rowIndex="5" />
+                              <CheckBox fx:id="movAvgEMARelBM1Select" mnemonicParsing="false" GridPane.rowIndex="6" />
+                              <CheckBox fx:id="movAvgEMARelBM2Select" mnemonicParsing="false" GridPane.rowIndex="7" />
+                              <CheckBox fx:id="movAvgSimp2Select" mnemonicParsing="false" GridPane.rowIndex="1" />
+                              <TextField fx:id="movAvgSimp1Text" promptText="Prd." GridPane.columnIndex="1" />
+                              <TextField fx:id="movAvgSimp2Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="movAvgEMA1Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="movAvgEMA2Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="movAvgSimpRelBM1Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <TextField fx:id="movAvgSimpRelBM2Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <TextField fx:id="movAvgEMARelBM1Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="movAvgEMARelBM2Text" promptText="Prd." GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <Label text="Mov. Avg. EMA - Rel. BM" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Mov. Avg. EMA - Rel. BM" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                                 <padding>
+                                    <Insets left="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label text="Mov. Avg. Simple - Rel. BM" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Mov. Avg. EMA" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Mov. Avg Simple" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Mov. Avg. Simple" GridPane.columnIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Mov. Avg. EMA" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Mov. Avg. Simple - Rel. BM" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="612.0" prefWidth="323.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <GridPane prefHeight="243.0" prefWidth="238.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="28.798828125" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.6864013671875" minWidth="0.0" prefWidth="75.01776123046875" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="63.2662353515625" minWidth="0.0" prefWidth="50.2840576171875" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="74.0828857421875" minWidth="5.9969482421875" prefWidth="52.05029296875" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.26629638671875" minWidth="10.0" prefWidth="52.94970703125" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="35.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="35.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <CheckBox fx:id="RSISelect" mnemonicParsing="false" />
+                              <CheckBox fx:id="RSIRelBMSelect" mnemonicParsing="false" GridPane.rowIndex="1" />
+                              <CheckBox fx:id="FSOSelect" mnemonicParsing="false" GridPane.rowIndex="2" />
+                              <CheckBox fx:id="FSORelBMSelect" mnemonicParsing="false" GridPane.rowIndex="3" />
+                              <CheckBox fx:id="MACDSelect" mnemonicParsing="false" GridPane.rowIndex="4" />
+                              <CheckBox fx:id="PPOSelect" mnemonicParsing="false" GridPane.rowIndex="5" />
+                              <CheckBox fx:id="correlationSelect" mnemonicParsing="false" GridPane.rowIndex="6" />
+                              <Label text="RSI" GridPane.columnIndex="1" />
+                              <Label text="RSI - Rel. BM" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label text="FSO" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="FSO - Rel. BM" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label text="MACD" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label text="PPO" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="CORREL" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="RSIText1" promptText="Prd." GridPane.columnIndex="2" />
+                              <TextField fx:id="RSIRelBMText1" promptText="Prd." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <TextField fx:id="FSOText1" promptText="Lkbk." GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <TextField fx:id="FSOText2" promptText="\%K" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <TextField fx:id="FSOText3" promptText="\%D" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                              <TextField fx:id="FSORelBMText1" promptText="Lkbk." GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <TextField fx:id="FSORelBMText2" promptText="\%K" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <TextField fx:id="FSORelBMText3" promptText="\%D" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                              <TextField fx:id="MACDText1" promptText="Fast" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="MACDText2" promptText="Slow" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                              <TextField fx:id="MACDText3" promptText="Sig." GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                              <TextField fx:id="PPOText1" promptText="Fast" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                              <TextField fx:id="PPOText2" promptText="Slow" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                              <TextField fx:id="PPOText3" promptText="Sig." GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                              <TextField fx:id="correlationText1" promptText="Prd." GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </GridPane>
+                        <Separator prefWidth="200.0" />
+                        <Label text="Strategy">
+                           <VBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Separator prefWidth="200.0" />
+                        <GridPane prefHeight="346.0" prefWidth="282.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="158.0" minHeight="10.0" prefHeight="143.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="189.55633544921875" minHeight="10.0" prefHeight="128.5" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <VBox prefHeight="179.0" prefWidth="282.0" spacing="10.0" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="outputDirText" prefHeight="27.0" prefWidth="190.0" promptText="Output directory" />
+                                    <Button fx:id="runButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="310.0" text="Run" />
+                                    <ProgressBar fx:id="progressBar" minHeight="10.0" prefHeight="1.0" prefWidth="270.0" progress="0.0" />
+                                    <Button fx:id="saveProfileButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="289.0" text="Save Profile" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </children>
+            </GridPane>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
