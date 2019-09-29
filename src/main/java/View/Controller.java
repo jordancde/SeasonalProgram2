@@ -745,7 +745,11 @@ public class Controller {
                                 try {
                                     Integer.parseInt(field.getText());
                                 } catch (NumberFormatException var8) {
-                                    throw new InvalidInputException("Technical indicator parameter not an integer.");
+                                    if(this.profile.technicalsManager.getSelected((TechnicalType)((Pair)this.technicalFieldMapping.get(field)).getKey())) {
+                                        throw new InvalidInputException("Technical indicator parameter not an integer.");
+                                    }else{
+                                        continue;
+                                    }
                                 } catch (NullPointerException var9) {
                                     continue;
                                 }
