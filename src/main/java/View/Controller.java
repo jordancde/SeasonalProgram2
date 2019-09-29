@@ -334,6 +334,10 @@ public class Controller {
                 (new Thread(() -> {
                     try {
                         update();
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(AlertType.CONFIRMATION, "Latest version installed. Please relaunch.", new ButtonType[]{ButtonType.CLOSE});
+                            alert.showAndWait();
+                        });
                     } catch (IOException e) {
                         Platform.runLater(() -> {
                             Alert alert = new Alert(AlertType.ERROR, "Update server unavailable.", new ButtonType[]{ButtonType.CLOSE});
@@ -668,7 +672,7 @@ public class Controller {
     }
 
     public void update() throws IOException {
-        InputStream inputStream = new URL("http://example.com/my-file-path.txt").openStream();
+        InputStream inputStream = new URL("https://github.com/jordandearsley/SeasonalProgram2/raw/master/target/SeasonalProgram-2.0.jar").openStream();
         try {
             Files.copy(inputStream, Paths.get(Controller.class.getProtectionDomain().getCodeSource().getLocation()
                     .toURI()), StandardCopyOption.REPLACE_EXISTING);
