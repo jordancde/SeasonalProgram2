@@ -14,7 +14,14 @@ import Components.Tables.MonthlyTable.Type;
 import Components.TechnicalsManager.TechnicalType;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -200,6 +207,9 @@ public class Controller {
     private Button saveProfileButton;
     @FXML
     private ProgressBar progressBar;
+    @FXML
+    private Button updateButton;
+
     HashMap<CheckBox, TechnicalType> boxMapping = new HashMap();
     HashMap<TextField, Pair<TechnicalType, Integer>> technicalFieldMapping = new HashMap();
 
@@ -315,6 +325,21 @@ public class Controller {
             public void handle(ActionEvent event) {
                 (new Thread(() -> {
                     Controller.this.run();
+                })).start();
+            }
+        });
+
+        this.updateButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                (new Thread(() -> {
+                    try {
+                        update();
+                    } catch (IOException e) {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(AlertType.ERROR, "Update server unavailable.", new ButtonType[]{ButtonType.CLOSE});
+                            alert.showAndWait();
+                        });
+                    }
                 })).start();
             }
         });
@@ -639,6 +664,16 @@ public class Controller {
             } catch (ParseException var5) {
                 return false;
             }
+        }
+    }
+
+    public void update() throws IOException {
+        InputStream inputStream = new URL("http://example.com/my-file-path.txt").openStream();
+        try {
+            Files.copy(inputStream, Paths.get(Controller.class.getProtectionDomain().getCodeSource().getLocation()
+                    .toURI()), StandardCopyOption.REPLACE_EXISTING);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 
