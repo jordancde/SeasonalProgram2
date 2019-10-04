@@ -1,5 +1,6 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,11 +19,13 @@ public class FSOIndicator extends Indicator {
         this.dPeriods = dPeriods;
     }
 
-    public List<Series> getFSO() throws SymbolInvalidException {
+    public List<Series> getFSO() throws SymbolInvalidException, InvalidInputException {
         Calendar newStart = (Calendar)this.start.clone();
         newStart.add(5, -(this.lookBack + this.kPeriods + this.dPeriods) * 4);
+
         this.security.refresh(newStart, this.end);
         this.benchmark.refresh(newStart, this.end);
+
         Series k = this.getK(this.security.getCloses(), this.security.getHighs(), this.security.getLows());
         Series d = this.getD(k, this.dPeriods);
         List<Series> series = new ArrayList();
@@ -31,7 +34,7 @@ public class FSOIndicator extends Indicator {
         return series;
     }
 
-    Series getK(Series closes, Series highs, Series lows) throws SymbolInvalidException {
+    Series getK(Series closes, Series highs, Series lows) {
         List<Double> kArray = new ArrayList();
 
         int i;

@@ -176,16 +176,16 @@
                               <TableColumn fx:id="securitiesTableSecurityColumn" prefWidth="268.5000228881836" text="Security" />
                           </columns>
                         </TableView>
-                        <HBox prefHeight="26.0" prefWidth="346.0" spacing="10.0">
+                        <HBox prefHeight="56.0" prefWidth="346.0" spacing="10.0">
                            <children>
                               <Button fx:id="addSecurityButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Add Security" />
-                              <Button fx:id="addTradeButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Add Trade" />
+                              <Button fx:id="removeSecurityButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Remove Security" />
                            </children>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </HBox>
-                        <TableView id="tradesTable" fx:id="tradesTable" editable="true" prefHeight="352.0" prefWidth="346.0">
+                        <TableView id="tradesTable" fx:id="tradesTable" editable="true" prefHeight="262.0" prefWidth="346.0">
                           <columns>
                             <TableColumn fx:id="tradesTableLongColumn" prefWidth="43.92914354801178" text="Long" />
                               <TableColumn fx:id="tradesTableSecurityColumn" prefWidth="100.0" text="Security" />
@@ -193,6 +193,15 @@
                               <TableColumn fx:id="tradesTableExitColumn" prefWidth="103.0" text="Exit" />
                           </columns>
                         </TableView>
+                        <HBox prefHeight="26.0" prefWidth="346.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="addTradeButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Add Trade" />
+                              <Button fx:id="removeTradeButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Remove Trade" />
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -399,17 +408,22 @@
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="158.0" minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="189.55633544921875" minHeight="10.0" prefHeight="128.5" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="158.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="190.5" minHeight="10.0" prefHeight="164.5" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <VBox prefHeight="203.0" prefWidth="282.0" spacing="10.0" GridPane.rowIndex="2">
+                              <VBox prefHeight="605.0" prefWidth="282.0" spacing="10.0" GridPane.rowIndex="2">
                                  <children>
-                                    <Button fx:id="saveProfileButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="289.0" text="Save Profile" />
-                                    <Button fx:id="updateButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="310.0" text="Check for updates..." />
+                                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                       <children>
+                                          <Button fx:id="saveProfileButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="172.0" text="Save Profile" />
+                                          <Button fx:id="deleteProfileButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="172.0" text="Delete Profile" />
+                                       </children>
+                                    </HBox>
                                     <TextField fx:id="outputDirText" prefHeight="27.0" prefWidth="190.0" promptText="Output directory" />
                                     <Button fx:id="runButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="310.0" text="Run" />
                                     <ProgressBar fx:id="progressBar" minHeight="10.0" prefHeight="1.0" prefWidth="270.0" progress="0.0" />
+                                    <Button fx:id="updateButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="310.0" text="Check for updates..." />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

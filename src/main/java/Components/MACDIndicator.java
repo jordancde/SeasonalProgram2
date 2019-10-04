@@ -1,6 +1,9 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
+import org.omg.CORBA.DynAnyPackage.Invalid;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,11 +20,13 @@ public class MACDIndicator extends Indicator {
         this.signal = signal;
     }
 
-    public List<Series> getMACD() throws SymbolInvalidException {
+    public List<Series> getMACD() throws SymbolInvalidException, InvalidInputException {
         Calendar newStart = (Calendar)this.start.clone();
         newStart.add(5, -(this.signal + Math.max(this.fast, this.slow)) * 4);
+
         this.benchmark.refresh(newStart, this.end);
         this.security.refresh(newStart, this.end);
+
         Series slowEMA = new Series("MACD slow EMA", this.security.getCloses().getDates(), this.getEMA(this.security.getCloses().getValues(), this.slow));
         Series fastEMA = new Series("MACD fast EMA", this.security.getCloses().getDates(), this.getEMA(this.security.getCloses().getValues(), this.fast));
         Series MACD = fastEMA.getDiffVs(slowEMA);

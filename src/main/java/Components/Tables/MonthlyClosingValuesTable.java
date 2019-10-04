@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Series;
 import Components.Table;
@@ -14,7 +15,7 @@ import java.util.List;
 public class MonthlyClosingValuesTable extends Table {
     MonthlyClosingValuesTable.Type tableType;
 
-    public MonthlyClosingValuesTable(String title, Security s, Calendar start, Calendar end, boolean addMonthHeaders, boolean addLeftAxis, MonthlyClosingValuesTable.Type type) throws SymbolInvalidException {
+    public MonthlyClosingValuesTable(String title, Security s, Calendar start, Calendar end, boolean addMonthHeaders, boolean addLeftAxis, MonthlyClosingValuesTable.Type type) throws SymbolInvalidException, InvalidInputException {
         this.tableType = type;
         List<String> titleRow = new ArrayList();
         titleRow.add(title);
@@ -36,6 +37,7 @@ public class MonthlyClosingValuesTable extends Table {
         int endMonth = end.get(2);
         Calendar securityStart = new GregorianCalendar(startYear, 0, 1);
         Calendar securityEnd = new GregorianCalendar(endYear, 12, 31);
+
         s.refresh(securityStart, securityEnd);
 
         for(int i = startYear; i <= endYear; ++i) {

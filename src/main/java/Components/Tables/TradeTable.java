@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Series;
 import Components.Table;
 import Components.Trade;
@@ -9,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class TradeTable extends Table {
-    public TradeTable(Trade t, boolean showRowTitles) throws SymbolInvalidException {
+    public TradeTable(Trade t, boolean showRowTitles) throws SymbolInvalidException, InvalidInputException {
         List<String> header = new ArrayList();
         if (showRowTitles) {
             header.add("");

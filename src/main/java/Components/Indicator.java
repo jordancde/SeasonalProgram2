@@ -1,6 +1,9 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -28,7 +31,7 @@ public class Indicator {
         this.name = name;
     }
 
-    public Series getValues() throws SymbolInvalidException {
+    public Series getValues() throws SymbolInvalidException, InvalidInputException {
         return this.security.closes;
     }
 

@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Series;
 import Components.Table;
@@ -11,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SecurityTradesTable extends Table {
-    public SecurityTradesTable(List<Trade> trades, Security s) throws SymbolInvalidException {
+    public SecurityTradesTable(List<Trade> trades, Security s) throws SymbolInvalidException, InvalidInputException {
         List<String> header = new ArrayList();
         header.add(s.getSymbol());
         this.addRow(header);

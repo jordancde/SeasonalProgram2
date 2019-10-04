@@ -47,7 +47,7 @@ public class Series implements Serializable {
     }
 
     public List<String> getDateStrings(String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         List<String> output = new ArrayList();
         Iterator var4 = this.dates.iterator();
 

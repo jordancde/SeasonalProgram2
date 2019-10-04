@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Series;
 import Components.Table;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class YearlyPerformanceTable extends Table {
-    public YearlyPerformanceTable(List<Security> securities, Security benchmark, Calendar startDate, Calendar endDate) throws SymbolInvalidException {
+    public YearlyPerformanceTable(List<Security> securities, Security benchmark, Calendar startDate, Calendar endDate) throws SymbolInvalidException, InvalidInputException {
         int startYear = startDate.get(1);
         int endYear = endDate.get(1);
         List<String> titleRow = new ArrayList();

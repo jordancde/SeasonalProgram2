@@ -1,6 +1,7 @@
 package Components.Tables;
 
 import Components.CorrelationIndicator;
+import Components.Exceptions.InvalidInputException;
 import Components.FSOIndicator;
 import Components.Indicator;
 import Components.MACDIndicator;
@@ -27,7 +28,7 @@ public class TechnicalTable extends Table {
     Calendar start;
     Calendar end;
 
-    public TechnicalTable(TechnicalsManager manager, Security security, Security benchmark, Calendar start, Calendar end) throws SymbolInvalidException {
+    public TechnicalTable(TechnicalsManager manager, Security security, Security benchmark, Calendar start, Calendar end) throws SymbolInvalidException, InvalidInputException {
         this.manager = manager;
         this.security = security;
         this.benchmark = benchmark;
@@ -42,7 +43,7 @@ public class TechnicalTable extends Table {
             this.addRow(titleRow);
             Table contents = new Table();
             new ArrayList();
-            List<String> datesColumn = ((Series)series.get(0)).trim(start, end).getDateStrings("dd MMM YYYY");
+            List<String> datesColumn = (series.get(0)).trim(start, end).getDateStrings("dd MMM yyyy");
             datesColumn.add(0, "Dates");
             contents.addColumn(datesColumn);
             Iterator var11 = series.iterator();
@@ -66,7 +67,7 @@ public class TechnicalTable extends Table {
         }
     }
 
-    List<Series> getSeries() throws SymbolInvalidException {
+    List<Series> getSeries() throws SymbolInvalidException, InvalidInputException {
         List<Series> series = new ArrayList();
         List<Selection> selections = this.manager.getSelections();
         Iterator var3 = selections.iterator();
@@ -79,7 +80,7 @@ public class TechnicalTable extends Table {
         return series;
     }
 
-    List<Series> buildSeries(Selection selection) throws SymbolInvalidException {
+    List<Series> buildSeries(Selection selection) throws SymbolInvalidException, InvalidInputException {
         this.security.refresh(this.start, this.end);
         this.benchmark.refresh(this.start, this.end);
         List<Series> series = new ArrayList();
@@ -100,10 +101,10 @@ public class TechnicalTable extends Table {
                 series.add(this.security.getVolumes().trim(this.start, this.end));
                 break;
             case PERCENT_GAIN:
-                series.add(this.security.getCloses().getPercentageGain().trim(this.start, this.end));
+                series.add(this.security.getCloses().getCumulativeGains(this.start, this.end).trim(this.start, this.end));
                 break;
             case BENCHMARK_PERCENT_GAIN:
-                series.add(this.benchmark.getCloses().getPercentageGain().trim(this.start, this.end));
+                series.add(this.benchmark.getCloses().getCumulativeGains(this.start, this.end).trim(this.start, this.end));
                 break;
             case BENCHMARK_CLOSE:
                 series.add(this.benchmark.getCloses().trim(this.start, this.end));

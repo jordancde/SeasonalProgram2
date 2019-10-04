@@ -1,5 +1,6 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,11 +14,13 @@ public class CorrelationIndicator extends Indicator {
         this.periods = periods;
     }
 
-    public Series getValues() throws SymbolInvalidException {
+    public Series getValues() throws SymbolInvalidException, InvalidInputException {
         Calendar newStart = (Calendar)this.start.clone();
         newStart.add(5, -this.periods * 4);
+
         this.security.refresh(newStart, this.end);
         this.benchmark.refresh(newStart, this.end);
+
         List<Double> values = new ArrayList();
 
         int i;

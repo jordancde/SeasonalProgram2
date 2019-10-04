@@ -1,5 +1,6 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,9 +47,8 @@ public class Security implements Serializable {
         this.selected = false;
     }
 
-    public void refresh(Calendar from, Calendar to) throws SymbolInvalidException {
-        from = (Calendar)from.clone();
-        to = (Calendar)to.clone();
+    void refreshFromYahoo(Calendar from, Calendar to) throws SymbolInvalidException {
+        // Case where we have to check yahoo finance
         if (this.closes == null || this.closes.getValues().size() == 0 || ((Calendar)this.closes.getDates().get(0)).compareTo(from) > 0 || ((Calendar)this.closes.getDates().get(this.closes.getDates().size() - 1)).compareTo(to) < 0) {
             from.add(5, -10);
             to.add(5, 10);
@@ -61,7 +61,7 @@ public class Security implements Serializable {
                 history = s.getHistory(from, to, Interval.DAILY);
             } catch (IOException var13) {
                 System.out.println("error retrieving: " + (String)this.symbol.get());
-                throw new SymbolInvalidException((String)this.symbol.get());
+                throw new SymbolInvalidException(this.symbol.get());
             }
 
             List<Calendar> dates = new ArrayList();
@@ -88,7 +88,25 @@ public class Security implements Serializable {
             this.lows = new Series(s.getSymbol() + " Low", dates, lows);
             this.volumes = new Series(s.getSymbol() + " Volume", dates, volumes);
         }
+    }
 
+    public void refresh(Calendar from, Calendar to) throws SymbolInvalidException, InvalidInputException {
+        from = (Calendar)from.clone();
+        to = (Calendar)to.clone();
+
+        ManualInputParser manualInputParser = ManualInputParser.getInstance();
+
+        if(manualInputParser.hasSymbol(this.getSymbol())){
+            List<Calendar> dates = manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.DATE);
+
+            this.closes = new Series(this.getSymbol() + " Close", dates, manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.CLOSE));
+            this.opens = new Series(this.getSymbol() + " Open", dates, manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.OPEN));
+            this.highs = new Series(this.getSymbol() + " High", dates, manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.HIGH));
+            this.lows = new Series(this.getSymbol() + " Low", dates, manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.LOW));
+            this.volumes = new Series(this.getSymbol() + " Volume", dates, manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.VOLUME));
+        }else{
+            refreshFromYahoo(from, to);
+        }
     }
 
     public String getSymbol() {

@@ -1,5 +1,6 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,11 +18,13 @@ public class PPOIndicator extends Indicator {
         this.signal = signal;
     }
 
-    public List<Series> getPPO() throws SymbolInvalidException {
+    public List<Series> getPPO() throws SymbolInvalidException, InvalidInputException {
         Calendar newStart = (Calendar)this.start.clone();
         newStart.add(5, -(this.signal + Math.max(this.fast, this.slow)) * 4);
+
         this.benchmark.refresh(newStart, this.end);
         this.security.refresh(newStart, this.end);
+
         Series slowEMA = new Series("PPO slow EMA", this.security.getCloses().getDates(), this.getEMA(this.security.getCloses().getValues(), this.slow));
         Series fastEMA = new Series("PPO fast EMA", this.security.getCloses().getDates(), this.getEMA(this.security.getCloses().getValues(), this.fast));
         Series PPO = fastEMA.getDiffVs(slowEMA).getRatioVs(slowEMA);

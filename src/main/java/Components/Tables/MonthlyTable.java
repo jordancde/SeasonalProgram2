@@ -1,12 +1,13 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Table;
 import Components.Exceptions.SymbolInvalidException;
 import java.util.Calendar;
 
 public class MonthlyTable extends Table {
-    public MonthlyTable(String title, Security s, Security benchmark, Calendar start, Calendar end, MonthlyTable.Type type) throws SymbolInvalidException {
+    public MonthlyTable(String title, Security s, Security benchmark, Calendar start, Calendar end, MonthlyTable.Type type) throws SymbolInvalidException, InvalidInputException {
         String var10002 = s.getSymbol();
         MonthlyGainsTable gainsTable = new MonthlyGainsTable(var10002 + " Monthly % Gains", Components.Tables.MonthlyGainsTable.Type.GAINS, s, benchmark, start, end, true, true);
         var10002 = benchmark.getSymbol();

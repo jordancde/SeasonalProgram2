@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Series;
 import Components.Table;
@@ -13,9 +14,11 @@ import java.util.Map;
 import javafx.util.Pair;
 
 public class CumulativeAveragesTable extends Table {
-    public CumulativeAveragesTable(String title, Security s, Security benchmark, Calendar start, Calendar end) throws SymbolInvalidException {
+    public CumulativeAveragesTable(String title, Security s, Security benchmark, Calendar start, Calendar end) throws SymbolInvalidException, InvalidInputException {
+
         s.refresh(start, end);
         benchmark.refresh(start, end);
+
         int startYear = start.get(1);
         int endYear = end.get(1);
         int startMonth = start.get(2);

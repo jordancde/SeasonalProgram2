@@ -1,6 +1,7 @@
 
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -50,10 +51,12 @@ public class Trade implements Serializable {
         this.setEnd("1999/12/31");
     }
 
-    Series getSecurityGains(Security s) throws SymbolInvalidException {
+    Series getSecurityGains(Security s) throws SymbolInvalidException, InvalidInputException {
         Calendar securityStart = new GregorianCalendar(this.startYear, this.startMonth - 1, this.startDay);
         Calendar securityEnd = new GregorianCalendar(this.endYear, this.endMonth - 1, this.endDay);
+
         s.refresh(securityStart, securityEnd);
+
         int firstPeriodStartYear = Math.max(this.startYear, s.getDataStart().get(1));
         int lastPeriodEndYear = Math.min(this.endYear, s.getDataEnd().get(1));
         Calendar start = new GregorianCalendar(firstPeriodStartYear, this.startMonth - 1, this.startDay);
@@ -78,15 +81,15 @@ public class Trade implements Serializable {
         return new Series(s.getSymbol() + " Gains", dates, values);
     }
 
-    public Series getGains() throws SymbolInvalidException {
+    public Series getGains() throws SymbolInvalidException, InvalidInputException {
         return this.getSecurityGains(this.security);
     }
 
-    public Series getBenchmarkGains() throws SymbolInvalidException {
+    public Series getBenchmarkGains() throws SymbolInvalidException, InvalidInputException {
         return this.getSecurityGains(this.benchmark);
     }
 
-    public Series getDiffGains() throws SymbolInvalidException {
+    public Series getDiffGains() throws SymbolInvalidException, InvalidInputException {
         return this.getGains().getDiffVs(this.getBenchmarkGains());
     }
 
@@ -166,10 +169,12 @@ public class Trade implements Serializable {
         return out;
     }
 
-    public int getNumPeriods() throws SymbolInvalidException {
+    public int getNumPeriods() throws SymbolInvalidException, InvalidInputException {
         Calendar start = new GregorianCalendar(this.startYear, this.startMonth - 1, this.startDay);
         Calendar end = new GregorianCalendar(this.endYear, this.endMonth - 1, this.endDay);
+
         this.security.refresh(start, end);
+
         int periods = 0;
         boolean inPeriod = false;
         List<Calendar> dates = this.security.getCloses().getDates();

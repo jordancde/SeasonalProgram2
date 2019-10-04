@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Series;
 import Components.Table;
@@ -17,7 +18,7 @@ public class MonthlyGainsTable extends Table {
     public Security security;
     public Security benchmark;
 
-    public MonthlyGainsTable(String title, MonthlyGainsTable.Type type, Security s, Security benchmark, Calendar start, Calendar end, boolean addMonthHeaders, boolean addLeftAxis) throws SymbolInvalidException {
+    public MonthlyGainsTable(String title, MonthlyGainsTable.Type type, Security s, Security benchmark, Calendar start, Calendar end, boolean addMonthHeaders, boolean addLeftAxis) throws SymbolInvalidException, InvalidInputException {
         this.tableType = type;
         this.security = s;
         this.benchmark = benchmark;
@@ -28,8 +29,10 @@ public class MonthlyGainsTable extends Table {
         Calendar periodStart = new GregorianCalendar(startYear, startMonth, 1);
         Calendar periodEnd = new GregorianCalendar(endYear, endMonth, 1);
         periodEnd.add(2, 1);
+
         s.refresh(periodStart, periodEnd);
         benchmark.refresh(periodStart, periodEnd);
+
         List<String> titleRow = new ArrayList();
         titleRow.add(title);
         if (addMonthHeaders) {
@@ -144,6 +147,7 @@ public class MonthlyGainsTable extends Table {
 
         content.addColumn();
         List<String> yearlyGains = new ArrayList();
+        for(int i = 0;i<7;i++) yearlyGains.add("");
 
         for(int i = startYear; i <= endYear; ++i) {
             yearStart = new GregorianCalendar(i, 0, 1);
@@ -163,6 +167,7 @@ public class MonthlyGainsTable extends Table {
 
         content.addColumn(yearlyGains);
         List<String> averages = new ArrayList();
+        for(int i = 0;i<7;i++) averages.add("");
 
         for(int i = 0; i < yearlySums.size(); ++i) {
             Double average = (Double)yearlySums.get(i) / (double)(Integer)yearlyCounts.get(i);
@@ -173,7 +178,7 @@ public class MonthlyGainsTable extends Table {
         this.addTableBelow(content);
     }
 
-    public Series getGains(Trade t) throws SymbolInvalidException {
+    public Series getGains(Trade t) throws SymbolInvalidException, InvalidInputException {
         switch(this.tableType) {
             case GAINS:
                 return t.getGains();

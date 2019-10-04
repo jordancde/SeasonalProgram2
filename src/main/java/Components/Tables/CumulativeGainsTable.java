@@ -1,5 +1,6 @@
 package Components.Tables;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Security;
 import Components.Series;
 import Components.Table;
@@ -10,8 +11,10 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class CumulativeGainsTable extends Table {
-    public CumulativeGainsTable(String title, Security s, Calendar start, Calendar end) throws SymbolInvalidException {
+    public CumulativeGainsTable(String title, Security s, Calendar start, Calendar end) throws SymbolInvalidException, InvalidInputException {
+
         s.refresh(start, end);
+
         int startYear = start.get(1);
         int endYear = end.get(1);
         int startMonth = start.get(2);

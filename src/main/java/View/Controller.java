@@ -1,5 +1,6 @@
 package View;
 
+import Components.ManualInputParser;
 import Components.Profile;
 import Components.Security;
 import Components.Trade;
@@ -93,6 +94,10 @@ public class Controller {
     private Button addSecurityButton;
     @FXML
     private Button addTradeButton;
+    @FXML
+    private Button removeSecurityButton;
+    @FXML
+    private Button removeTradeButton;
     @FXML
     private TableView<Trade> tradesTable = new TableView();
     @FXML
@@ -206,6 +211,8 @@ public class Controller {
     @FXML
     private Button saveProfileButton;
     @FXML
+    private Button deleteProfileButton;
+    @FXML
     private ProgressBar progressBar;
     @FXML
     private Button updateButton;
@@ -226,8 +233,12 @@ public class Controller {
         this.profile.serialize();
     }
 
-    public void loadProfile(String name) {
-        this.profile = new Profile(name);
+    public void loadProfile(String name) throws IOException {
+        if(name.isEmpty()){
+            this.profile = new Profile();
+        }else{
+            this.profile = new Profile(name);
+        }
         this.profileDropdown.setValue(this.profile.getName());
         this.setupSecuritiesTable();
         this.setupTradesTable();
@@ -268,7 +279,11 @@ public class Controller {
     public void setupProfile() throws IOException, ClassNotFoundException {
         this.profileDropdown.setItems(FXCollections.observableList(this.listProfiles()));
         this.profileDropdown.valueProperty().addListener((obs, oldItem, newItem) -> {
-            this.loadProfile(newItem);
+            try {
+                this.loadProfile(newItem);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -285,6 +300,7 @@ public class Controller {
                 Controller.this.refreshTables();
             }
         });
+
         this.addSecurityButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 Controller.this.securitiesTable.setEditable(false);
@@ -299,6 +315,22 @@ public class Controller {
                 Controller.this.tradesTable.setEditable(true);
             }
         });
+
+        this.removeSecurityButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                Security selected = securitiesTable.getSelectionModel().getSelectedItem();
+                securitiesTable.getItems().remove(selected);
+                profile.securities.remove(selected);
+            }
+        });
+        this.removeTradeButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                Trade selected = tradesTable.getSelectionModel().getSelectedItem();
+                tradesTable.getItems().remove(selected);
+                profile.trades.remove(selected);
+            }
+        });
+
         this.saveProfileButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 TextInputDialog td = new TextInputDialog("Enter Profile Name");
@@ -309,7 +341,7 @@ public class Controller {
                     try {
                         Controller.this.validateInput();
                         Controller.this.saveProfile();
-                        Controller.this.setupProfile();
+                        profileDropdown.getItems().add(profile.getName());
                         Controller.this.profileDropdown.setValue(Controller.this.profile.getName());
                     } catch (InvalidInputException var6) {
                         Alert alert = new Alert(AlertType.ERROR, "Input Invalid: " + var6.getLocalizedMessage(), new ButtonType[]{ButtonType.CLOSE});
@@ -321,6 +353,33 @@ public class Controller {
                 }
             }
         });
+        this.deleteProfileButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                if(profile.getName().isEmpty()) return;
+
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirm Delete Profile");
+                String s = "Are you sure you'd like to delete " + profile.getName() + "?";
+                alert.setContentText(s);
+
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+                    profileDropdown.setValue("");
+                    profileDropdown.getItems().remove(profile.getName());
+                    profile.delete();
+                    try {
+                        profile = new Profile();
+                        Alert resultAlert = new Alert(AlertType.CONFIRMATION, "Profile deleted.", new ButtonType[]{ButtonType.CLOSE});
+                        resultAlert.showAndWait();
+                    } catch (IOException ex) {
+                        Alert errorAlert = new Alert(AlertType.ERROR, "IOException while deleting profile.", new ButtonType[]{ButtonType.CLOSE});
+                        errorAlert.showAndWait();
+                    }
+                }
+            }
+        });
+
         this.runButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 (new Thread(() -> {
@@ -578,7 +637,12 @@ public class Controller {
 
     public void run() {
         try {
+            // refresh input file
+            ManualInputParser manualInputParser = ManualInputParser.getInstance();
+            manualInputParser.refresh();
+
             this.validateInput();
+
             String var10000 = this.profile.getOutputDirectory();
             String dir = var10000.replaceAll("/$", "") + "/";
             DateFormat df = new SimpleDateFormat("dd_MM_yy HH_mm_ss");

@@ -1,6 +1,9 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -56,7 +59,7 @@ public class MovingAverageIndicator extends Indicator {
         return outputValues;
     }
 
-    public Series getValues() throws SymbolInvalidException {
+    public Series getValues() throws SymbolInvalidException, InvalidInputException {
         Calendar newStart = (Calendar)this.start.clone();
         newStart.add(5, -this.period * 4);
         this.security.refresh(newStart, this.end);

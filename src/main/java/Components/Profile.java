@@ -71,23 +71,6 @@ public class Profile implements Serializable {
         this.selectedSecurityNames.addAll((List)s.readObject());
     }
 
-    public Profile(String name, Security benchmark, Pair<Integer, Integer> monthlyStart, Pair<Integer, Integer> monthlyEnd, Calendar windowStart, Calendar windowEnd, List<Series> series, List<Trade> trades, List<Security> securities) {
-        this.sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-        this.name = "";
-        this.technicalsManager = new TechnicalsManager();
-        this.trades = FXCollections.observableArrayList(new ArrayList());
-        this.securities = FXCollections.observableArrayList(new ArrayList());
-        this.selectedSecurityNames = FXCollections.observableArrayList(new ArrayList());
-        this.initialize();
-        this.name = name;
-        this.benchmark = benchmark;
-        this.monthlyStatsStart = new GregorianCalendar((Integer)monthlyStart.getValue(), (Integer)monthlyStart.getKey(), 1);
-        this.monthlyStatsEnd = new GregorianCalendar((Integer)monthlyEnd.getValue(), (Integer)monthlyEnd.getKey(), 1);
-        this.monthlyStatsEnd.set(5, this.monthlyStatsEnd.getActualMaximum(5));
-        this.windowStart = windowStart;
-        this.windowEnd = windowEnd;
-    }
-
     public Profile() throws IOException {
         this.sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         this.name = "";
@@ -112,7 +95,7 @@ public class Profile implements Serializable {
         this.monthlyStatsEnd = Calendar.getInstance();
         this.windowStart = Calendar.getInstance();
         this.windowEnd = Calendar.getInstance();
-        this.benchmark = new Security("^SPX");
+        this.benchmark = new Security("");
         this.outputDirectory = "";
         this.addSecurityListener();
     }
@@ -126,7 +109,8 @@ public class Profile implements Serializable {
         this.securities.addListener(securitiesListener);
     }
 
-    public Profile(String profileName) {
+    public Profile(String profileName)  {
+
         this.sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         this.name = "";
         this.technicalsManager = new TechnicalsManager();
@@ -194,7 +178,24 @@ public class Profile implements Serializable {
         } catch (ClassNotFoundException | IOException var6) {
             System.out.println("IOException/ClassNotFoundException writing profile");
         }
+    }
 
+    public void delete(){
+        try {
+            FileInputStream inputFile = new FileInputStream("profiles");
+            ObjectInputStream in = new ObjectInputStream(inputFile);
+            Map<String, Profile> map = (Map)in.readObject();
+            map.remove(this.name);
+            in.close();
+            inputFile.close();
+            FileOutputStream file = new FileOutputStream("profiles");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(map);
+            out.close();
+            file.close();
+        } catch (ClassNotFoundException | IOException var6) {
+            System.out.println("IOException/ClassNotFoundException writing profile");
+        }
     }
 
     public static List<Profile> getProfiles() throws IOException, ClassNotFoundException {
