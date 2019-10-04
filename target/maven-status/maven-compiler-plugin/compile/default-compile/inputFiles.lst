@@ -2,6 +2,7 @@
 /Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/Tables/TradeTable.java
 /Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/Tables/MonthlyGainsTable.java
 /Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/Indicator.java
+/Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/ManualInputParser.java
 /Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/Exceptions/SymbolInvalidException.java
 /Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/Tables/MonthlyClosingValuesTable.java
 /Users/jordandearsley/IdeaProjects/Project/src/main/java/Components/Profile.java

@@ -36,7 +36,11 @@ public class ManualInputParser {
     public Map<String, SecuritySeries> entries;
 
     public void refresh() throws InvalidInputException {
+
         entries = new HashMap();
+
+        File csvFile = new File(inputFilePath);
+        if (!csvFile.isFile()) return;
 
         List<List<String>> csv = readList();
 
