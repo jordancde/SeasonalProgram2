@@ -15,17 +15,17 @@ public class MonthlyTable extends Table {
         var10002 = s.getSymbol();
         MonthlyGainsTable differenceGainsTable = new MonthlyGainsTable(var10002 + "-" + benchmark.getSymbol() + " Difference % Gains", Components.Tables.MonthlyGainsTable.Type.DIFFERENCE_GAINS, s, benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL);
         var10002 = s.getSymbol();
-        MonthlyClosingValuesTable closesTable = new MonthlyClosingValuesTable(var10002 + " Monthly Closes", s, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL, Components.Tables.MonthlyClosingValuesTable.Type.CLOSES);
+        MonthlyClosingValuesTable closesTable = new MonthlyClosingValuesTable(var10002 + " Monthly Closes", s, start, end, type == MonthlyTable.Type.HORIZONTAL, true, Components.Tables.MonthlyClosingValuesTable.Type.CLOSES);
         var10002 = benchmark.getSymbol();
-        MonthlyClosingValuesTable benchmarkClosesTable = new MonthlyClosingValuesTable(var10002 + " Monthly Closes", benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL, Components.Tables.MonthlyClosingValuesTable.Type.CLOSES);
+        MonthlyClosingValuesTable benchmarkClosesTable = new MonthlyClosingValuesTable(var10002 + " Monthly Closes", benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, true, Components.Tables.MonthlyClosingValuesTable.Type.CLOSES);
         var10002 = s.getSymbol();
-        MonthlyClosingValuesTable highsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Highs", s, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL, Components.Tables.MonthlyClosingValuesTable.Type.HIGHS);
+        MonthlyClosingValuesTable highsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Highs", s, start, end, type == MonthlyTable.Type.HORIZONTAL, true, Components.Tables.MonthlyClosingValuesTable.Type.HIGHS);
         var10002 = benchmark.getSymbol();
-        MonthlyClosingValuesTable benchmarkHighsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Highs", benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL, Components.Tables.MonthlyClosingValuesTable.Type.HIGHS);
+        MonthlyClosingValuesTable benchmarkHighsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Highs", benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, true, Components.Tables.MonthlyClosingValuesTable.Type.HIGHS);
         var10002 = s.getSymbol();
-        MonthlyClosingValuesTable lowsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Lows", s, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL, Components.Tables.MonthlyClosingValuesTable.Type.LOWS);
+        MonthlyClosingValuesTable lowsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Lows", s, start, end, type == MonthlyTable.Type.HORIZONTAL, true, Components.Tables.MonthlyClosingValuesTable.Type.LOWS);
         var10002 = benchmark.getSymbol();
-        MonthlyClosingValuesTable benchmarkLowsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Lows", benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, type == MonthlyTable.Type.VERTICAL, Components.Tables.MonthlyClosingValuesTable.Type.LOWS);
+        MonthlyClosingValuesTable benchmarkLowsTable = new MonthlyClosingValuesTable(var10002 + " Monthly Lows", benchmark, start, end, type == MonthlyTable.Type.HORIZONTAL, true, Components.Tables.MonthlyClosingValuesTable.Type.LOWS);
         switch(type) {
             case HORIZONTAL:
                 this.addTableRight(gainsTable, 0);
