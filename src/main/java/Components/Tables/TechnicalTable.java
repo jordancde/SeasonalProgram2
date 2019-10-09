@@ -113,7 +113,7 @@ public class TechnicalTable extends Table {
                 series.add(this.security.getCloses().getCumulativeGains(this.start, this.end).getRelativePerformanceVs(this.benchmark.getCloses().getCumulativeGains(this.start, this.end)).trim(this.start, this.end));
                 break;
             case REL_STR_VS_BM_RATIO:
-                series.add(this.security.getCloses().trim(this.start, this.end).getRatioVs(this.benchmark.getCloses()).trim(this.start, this.end));
+                series.add(this.security.getCloses().trim(this.start, this.end).getRatioVs(this.benchmark.getCloses().trim(this.start, this.end)));
                 break;
             case MOV_AVG_SIMP_1:
             case MOV_AVG_SIMP_2:
