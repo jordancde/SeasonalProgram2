@@ -28,7 +28,8 @@ public class MonthlyGainsTable extends Table {
         int endMonth = end.get(2);
         Calendar periodStart = new GregorianCalendar(startYear, startMonth, 1);
         Calendar periodEnd = new GregorianCalendar(endYear, endMonth, 1);
-        periodEnd.add(2, 1);
+
+        periodEnd.add(Calendar.MONTH, 1);
 
         s.refresh(periodStart, periodEnd);
         benchmark.refresh(periodStart, periodEnd);
@@ -84,27 +85,29 @@ public class MonthlyGainsTable extends Table {
             yearlyCounts.add(0);
         }
 
-        GregorianCalendar yearStart;
         for(int i = 0; i < 12; ++i) {
             Calendar tradeStart = new GregorianCalendar(startYear, i, 1);
-            yearStart = new GregorianCalendar(endYear, i, 1);
-            yearStart.add(2, 1);
+            Calendar tradeEnd = new GregorianCalendar(endYear, i, 1);
+
+            //set to the end of the month
+            tradeEnd.add(Calendar.MONTH,1);
+
             ArrayList<String> column = new ArrayList();
             if (i < startMonth) {
                 tradeStart.add(1, 1);
             }
 
             if (i > endMonth) {
-                yearStart.add(1, -1);
+                tradeEnd.add(Calendar.YEAR, -1);
             }
 
-            Trade trade = new Trade(true, tradeStart, yearStart, s, benchmark);
+            Trade trade = new Trade(true, tradeStart, tradeEnd, s, benchmark, true);
             if (i < startMonth) {
                 column.add("");
             }
 
             Series gains;
-            if (tradeStart.compareTo(yearStart) <= 0) {
+            if (tradeStart.compareTo(tradeEnd) <= 0) {
                 gains = this.getGains(trade);
             } else {
                 gains = new Series();
@@ -147,10 +150,10 @@ public class MonthlyGainsTable extends Table {
 
         content.addColumn();
         List<String> yearlyGains = new ArrayList();
-        for(int i = 0;i<7;i++) yearlyGains.add("");
+        for(int i = 0;i < 7;i++) yearlyGains.add("");
 
         for(int i = startYear; i <= endYear; ++i) {
-            yearStart = new GregorianCalendar(i, 0, 1);
+            Calendar yearStart = new GregorianCalendar(i, 0, 1);
             Calendar yearEnd = new GregorianCalendar(i + 1, 0, 1);
             if (i == startYear) {
                 yearStart.set(2, startMonth);

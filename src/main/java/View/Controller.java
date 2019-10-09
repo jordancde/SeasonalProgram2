@@ -411,6 +411,7 @@ public class Controller {
                             alert.showAndWait();
                         });
                     } catch (IOException e) {
+                        e.printStackTrace();
                         Platform.runLater(() -> {
                             Alert alert = new Alert(AlertType.ERROR, "Update server unavailable.", new ButtonType[]{ButtonType.CLOSE});
                             alert.showAndWait();

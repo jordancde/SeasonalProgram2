@@ -23,8 +23,9 @@ public class Trade implements Serializable {
     int endMonth;
     int startDay;
     int endDay;
+    boolean endOneDayPrevious;
 
-    public Trade(boolean isLong, String start, String end, Security security, Security benchmark) {
+    public Trade(boolean isLong, String start, String end, Security security, Security benchmark, boolean endOneDayPrevious) {
         this.sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         this.isLong = isLong;
         this.security = security;
@@ -34,12 +35,17 @@ public class Trade implements Serializable {
     }
 
     public Trade(boolean isLong, Calendar start, Calendar end, Security security, Security benchmark) {
+        this(isLong, start, end, security, benchmark, false);
+    }
+
+    public Trade(boolean isLong, Calendar start, Calendar end, Security security, Security benchmark, boolean endOneDayPrevious) {
         this.sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         this.isLong = isLong;
         this.security = security;
         this.benchmark = benchmark;
         this.setStart(start);
         this.setEnd(end);
+        this.endOneDayPrevious = endOneDayPrevious;
     }
 
     public Trade(Security benchmark) {
@@ -49,6 +55,7 @@ public class Trade implements Serializable {
         this.benchmark = benchmark;
         this.setStart("1999/12/31");
         this.setEnd("1999/12/31");
+        this.endOneDayPrevious = false;
     }
 
     Series getSecurityGains(Security s) throws SymbolInvalidException, InvalidInputException {
@@ -70,7 +77,14 @@ public class Trade implements Serializable {
 
         while(end.get(1) <= lastPeriodEndYear) {
             Double startingValue = s.getCloses().getValue(start);
-            Double endingValue = s.getCloses().getValue(end);
+
+            Double endingValue;
+            if(this.endOneDayPrevious){
+                endingValue = s.getCloses().getValue(end);
+            }else{
+                endingValue = s.getCloses().getCurrentValue(end);
+            }
+
             dates.add((Calendar)start.clone());
             Double finalValue = endingValue / startingValue - 1.0D;
             values.add(this.isLong ? finalValue : -1.0D * finalValue);

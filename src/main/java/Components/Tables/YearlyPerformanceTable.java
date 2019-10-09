@@ -39,7 +39,10 @@ public class YearlyPerformanceTable extends Table {
             row.add(s.getSymbol());
 
             Calendar start = new GregorianCalendar(startYear, 0, 1);
-            Calendar end = new GregorianCalendar(endYear + 1, 0, 1);
+            Calendar end = new GregorianCalendar(endYear, 0, 1);
+
+            // set it to the end of the year
+            end.set(Calendar.DAY_OF_YEAR, end.getActualMaximum(Calendar.DAY_OF_YEAR));
 
             Trade t = new Trade(true, start, end, s, benchmark);
 
