@@ -243,6 +243,7 @@ public class Profile implements Serializable {
     public void setMonthlyStatsStart(String formattedDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
         try {
+            if(this.monthlyStatsStart == null) this.monthlyStatsStart = Calendar.getInstance();
             this.monthlyStatsStart.setTime(format.parse(formattedDate));
         }catch(ParseException e){
             this.monthlyStatsStart = null;
@@ -252,6 +253,7 @@ public class Profile implements Serializable {
     public void setMonthlyStatsEnd(String formattedDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
         try {
+            if(this.monthlyStatsEnd == null) this.monthlyStatsEnd = Calendar.getInstance();
             this.monthlyStatsEnd.setTime(format.parse(formattedDate));
         }catch(ParseException e){
             this.monthlyStatsEnd = null;
@@ -280,6 +282,7 @@ public class Profile implements Serializable {
 
     public void setWindowStart(String formattedDate) {
         try{
+            if(this.windowStart == null) this.windowStart = Calendar.getInstance();
             this.windowStart.setTime(this.sdf.parse(formattedDate));
         }catch(ParseException e){
             this.windowStart = null;
@@ -288,6 +291,7 @@ public class Profile implements Serializable {
 
     public void setWindowEnd(String formattedDate) {
         try {
+            if(this.windowEnd == null) this.windowEnd = Calendar.getInstance();
             this.windowEnd.setTime(this.sdf.parse(formattedDate));
         }catch(ParseException e){
             this.windowEnd = null;
