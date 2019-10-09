@@ -330,6 +330,25 @@ public class Controller {
                 TextInputDialog td = new TextInputDialog("Enter Profile Name");
                 Optional<String> result = td.showAndWait();
                 if (result.isPresent()) {
+
+                    String name = td.getEditor().getText();
+
+                    // confirm if replacing profile
+                    try {
+                        List<String> profileNames = listProfiles();
+
+                        if (profileNames.contains(name)) {
+                            Alert alert = new Alert(AlertType.CONFIRMATION, "Profile exists, would you like to overwrite?");
+                            Optional<ButtonType> overwriteProfile = alert.showAndWait();
+
+                            if (!(result.isPresent()) || (overwriteProfile.get() != ButtonType.OK))
+                                return;
+
+                            profileDropdown.getItems().remove(name);
+                        }
+                    }catch(IOException e){}
+                    catch(ClassNotFoundException e){}
+
                     Controller.this.profile.setName(td.getEditor().getText());
 
                     try {
