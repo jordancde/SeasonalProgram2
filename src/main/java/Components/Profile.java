@@ -91,10 +91,10 @@ public class Profile implements Serializable {
     }
 
     public void initialize() {
-        this.monthlyStatsStart = Calendar.getInstance();
-        this.monthlyStatsEnd = Calendar.getInstance();
-        this.windowStart = Calendar.getInstance();
-        this.windowEnd = Calendar.getInstance();
+        this.monthlyStatsStart = null;
+        this.monthlyStatsEnd = null;
+        this.windowStart = null;
+        this.windowEnd = null;
         this.benchmark = new Security("");
         this.outputDirectory = "";
         this.addSecurityListener();
@@ -240,35 +240,67 @@ public class Profile implements Serializable {
         return this.benchmark;
     }
 
-    public void setMonthlyStatsStartField(int field, int value) {
-        this.monthlyStatsStart.set(field, field == 2 ? value - 1 : value);
+    public void setMonthlyStatsStart(String formattedDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
+        try {
+            this.monthlyStatsStart.setTime(format.parse(formattedDate));
+        }catch(ParseException e){
+            this.monthlyStatsStart = null;
+        }
     }
 
-    public void setMonthlyStatsEndField(int field, int value) {
-        this.monthlyStatsEnd.set(field, field == 2 ? value - 1 : value);
+    public void setMonthlyStatsEnd(String formattedDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
+        try {
+            this.monthlyStatsEnd.setTime(format.parse(formattedDate));
+        }catch(ParseException e){
+            this.monthlyStatsEnd = null;
+        }
     }
 
-    public Integer getMonthlyStatsStartField(int field) {
-        return this.monthlyStatsStart.get(field) + (field == 2 ? 1 : 0);
+    public String getMonthlyStatsStart() {
+        if (this.monthlyStatsStart == null) return "";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
+        return format.format(getMonthlyStatsStartCal().getTime());
     }
 
-    public Integer getMonthlyStatsEndField(int field) {
-        return this.monthlyStatsEnd.get(field) + (field == 2 ? 1 : 0);
+    public String getMonthlyStatsEnd() {
+        if (this.monthlyStatsEnd == null) return "";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM");
+        return format.format(getMonthlyStatsEndCal().getTime());
     }
 
-    public void setWindowStart(String formattedDate) throws ParseException {
-        this.windowStart.setTime(this.sdf.parse(formattedDate));
+    public Calendar getMonthlyStatsStartCal() {
+        return this.monthlyStatsStart;
     }
 
-    public void setWindowEnd(String formattedDate) throws ParseException {
-        this.windowEnd.setTime(this.sdf.parse(formattedDate));
+    public Calendar getMonthlyStatsEndCal() {
+        return this.monthlyStatsEnd;
+    }
+
+    public void setWindowStart(String formattedDate) {
+        try{
+            this.windowStart.setTime(this.sdf.parse(formattedDate));
+        }catch(ParseException e){
+            this.windowStart = null;
+        }
+    }
+
+    public void setWindowEnd(String formattedDate) {
+        try {
+            this.windowEnd.setTime(this.sdf.parse(formattedDate));
+        }catch(ParseException e){
+            this.windowEnd = null;
+        }
     }
 
     public String getWindowStart() {
+        if (this.windowStart == null) return "";
         return this.sdf.format(this.windowStart.getTime());
     }
 
     public String getWindowEnd() {
+        if (this.windowEnd == null) return "";
         return this.sdf.format(this.windowEnd.getTime());
     }
 
@@ -304,13 +336,5 @@ public class Profile implements Serializable {
 
     public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
-    }
-
-    public Calendar getMonthlyStatsStart() {
-        return this.monthlyStatsStart;
-    }
-
-    public Calendar getMonthlyStatsEnd() {
-        return this.monthlyStatsEnd;
     }
 }

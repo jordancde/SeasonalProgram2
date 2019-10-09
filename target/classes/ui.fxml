@@ -79,8 +79,7 @@
                         <GridPane>
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="59.0" minWidth="10.0" prefWidth="37.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="86.0" minWidth="10.0" prefWidth="83.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="74.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -89,42 +88,8 @@
                            <children>
                               <Label text="Start" />
                               <Label text="End" GridPane.rowIndex="1" />
-                              <HBox prefHeight="28.0" prefWidth="82.0" GridPane.columnIndex="1">
-                                 <children>
-                                    <Label prefHeight="32.0" prefWidth="34.0" text="Yr" />
-                                    <TextField fx:id="monthlyStatsYearStartText" prefHeight="27.0" prefWidth="63.0" promptText="YYYY" />
-                                 </children>
-                                 <GridPane.margin>
-                                    <Insets right="10.0" />
-                                 </GridPane.margin>
-                              </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <children>
-                                    <Label prefHeight="40.0" prefWidth="34.0" text="Yr" />
-                                    <TextField fx:id="monthlyStatsYearEndText" prefHeight="27.0" prefWidth="63.0" promptText="YYYY" />
-                                 </children>
-                                 <GridPane.margin>
-                                    <Insets right="10.0" />
-                                 </GridPane.margin>
-                              </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
-                                 <children>
-                                    <Label prefHeight="43.0" prefWidth="34.0" text="Mo" />
-                                    <TextField fx:id="monthlyStatsMonthStartText" prefHeight="27.0" prefWidth="50.0" promptText="MM" />
-                                 </children>
-                                 <GridPane.margin>
-                                    <Insets right="10.0" />
-                                 </GridPane.margin>
-                              </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                 <children>
-                                    <Label prefHeight="34.0" prefWidth="34.0" text="Mo" />
-                                    <TextField fx:id="monthlyStatsMonthEndText" prefWidth="50.0" promptText="MM" />
-                                 </children>
-                                 <GridPane.margin>
-                                    <Insets right="10.0" />
-                                 </GridPane.margin>
-                              </HBox>
+                              <TextField fx:id="monthlyStatsStartText" prefHeight="27.0" prefWidth="157.0" promptText="YYYY/MM" GridPane.columnIndex="1" />
+                              <TextField fx:id="monthlyStatsEndText" prefHeight="27.0" prefWidth="63.0" promptText="YYYY/MM" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                      </children>

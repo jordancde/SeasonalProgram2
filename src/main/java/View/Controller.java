@@ -71,13 +71,9 @@ public class Controller {
     @FXML
     private TextField benchmarkText;
     @FXML
-    private TextField monthlyStatsYearStartText;
+    private TextField monthlyStatsStartText;
     @FXML
-    private TextField monthlyStatsYearEndText;
-    @FXML
-    private TextField monthlyStatsMonthStartText;
-    @FXML
-    private TextField monthlyStatsMonthEndText;
+    private TextField monthlyStatsEndText;
     @FXML
     private TextField technicalStartText;
     @FXML
@@ -244,10 +240,8 @@ public class Controller {
         this.setupTradesTable();
         this.outputDirText.setText(this.profile.getOutputDirectory());
         this.benchmarkText.setText(this.profile.getBenchmark().getSymbol());
-        this.monthlyStatsYearStartText.setText(this.profile.getMonthlyStatsStartField(1).toString());
-        this.monthlyStatsYearEndText.setText(this.profile.getMonthlyStatsEndField(1).toString());
-        this.monthlyStatsMonthStartText.setText(this.profile.getMonthlyStatsStartField(2).toString());
-        this.monthlyStatsMonthEndText.setText(this.profile.getMonthlyStatsEndField(2).toString());
+        this.monthlyStatsStartText.setText(this.profile.getMonthlyStatsStart());
+        this.monthlyStatsEndText.setText(this.profile.getMonthlyStatsEnd());
         this.technicalStartText.setText(this.profile.getWindowStart());
         this.technicalEndText.setText(this.profile.getWindowEnd());
         this.boxMapping.forEach((box, type) -> {
@@ -577,51 +571,27 @@ public class Controller {
     }
 
     public void setupTextFields() {
+
         this.benchmarkText.textProperty().addListener((observable, oldValue, newValue) -> {
             this.profile.setBenchmark(new Security(newValue));
         });
-        this.monthlyStatsMonthStartText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                this.profile.setMonthlyStatsStartField(2, Integer.valueOf(newValue));
-            } catch (NumberFormatException var5) {
-            }
 
+        this.monthlyStatsStartText.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.profile.setMonthlyStatsStart(newValue);
         });
-        this.monthlyStatsYearStartText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                this.profile.setMonthlyStatsStartField(1, Integer.valueOf(newValue));
-            } catch (NumberFormatException var5) {
-            }
 
+        this.monthlyStatsEndText.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.profile.setMonthlyStatsEnd(newValue);
         });
-        this.monthlyStatsMonthEndText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                this.profile.setMonthlyStatsEndField(2, Integer.valueOf(newValue));
-            } catch (NumberFormatException var5) {
-            }
 
-        });
-        this.monthlyStatsYearEndText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                this.profile.setMonthlyStatsEndField(1, Integer.valueOf(newValue));
-            } catch (NumberFormatException var5) {
-            }
-
-        });
         this.technicalStartText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                this.profile.setWindowStart(newValue);
-            } catch (ParseException var5) {
-            }
-
+            this.profile.setWindowStart(newValue);
         });
+
         this.technicalEndText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                this.profile.setWindowEnd(newValue);
-            } catch (ParseException var5) {
-            }
-
+            this.profile.setWindowEnd(newValue);
         });
+
         this.outputDirText.textProperty().addListener((observable, oldValue, newValue) -> {
             this.profile.setOutputDirectory(newValue);
         });
@@ -643,51 +613,73 @@ public class Controller {
 
             this.validateInput();
 
-            String var10000 = this.profile.getOutputDirectory();
-            String dir = var10000.replaceAll("/$", "") + "/";
+            String directory = this.profile.getOutputDirectory();
+            String dir = directory.replaceAll("/$", "") + "/";
+
             DateFormat df = new SimpleDateFormat("dd_MM_yy HH_mm_ss");
             Date now = Calendar.getInstance().getTime();
-            var10000 = df.format(now);
-            String directoryName = "Output - " + var10000;
+            String dateString = df.format(now);
+            String directoryName = "Output - " + dateString;
+
             dir = dir + directoryName;
-            (new File(dir)).mkdirs();
+            new File(dir).mkdirs();
+
             int numTables = 1 + 5 * this.profile.getSelectedSecurities().size();
+
             double progress = 0.0D;
             this.progressBar.setProgress(progress);
-            PrintWriter writer = new PrintWriter(dir + "/Sectors Summary.csv");
-            writer.write((new YearlyPerformanceTable(this.profile.getSelectedSecurities(), this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
-            writer.close();
-            progress += 1.0D / (double)numTables;
-            this.progressBar.setProgress(progress);
-            Iterator var9 = this.profile.getSelectedSecurities().iterator();
+            PrintWriter writer;
 
-            while(var9.hasNext()) {
-                Security s = (Security)var9.next();
+            if(technicalStatsEnabled()) {
+                writer = new PrintWriter(dir + "/Sectors Summary.csv");
+                writer.write((new YearlyPerformanceTable(this.profile.getSelectedSecurities(), this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
+                writer.close();
+            }
+            progress += 1.0D / numTables;
+            this.progressBar.setProgress(progress);
+
+            for(Security s: this.profile.getSelectedSecurities()) {
+
                 String currentDir = dir + "/" + s.getSymbol();
                 (new File(currentDir)).mkdirs();
-                writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Seasonality.csv");
-                writer.write((new SecurityTradesTable(this.profile.trades, s)).toString());
-                writer.close();
+
+                if(seasonalityEnabled()) {
+                    writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Seasonality.csv");
+                    writer.write((new SecurityTradesTable(this.profile.trades, s)).toString());
+                    writer.close();
+                }
+                progress += 1.0D / numTables;
+                this.progressBar.setProgress(progress);
+
+                if(monthlyStatsEnabled()) {
+                    writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Monthly Gains (Horiz).csv");
+                    writer.write((new MonthlyTable(s.getSymbol() + " Monthly % Gains", s, this.profile.getBenchmark(), this.profile.getMonthlyStatsStartCal(), this.profile.getMonthlyStatsEndCal(), Type.HORIZONTAL)).toString());
+                    writer.close();
+                }
+                progress += 1.0D / numTables;
+                this.progressBar.setProgress(progress);
+
+                if(monthlyStatsEnabled()) {
+                    writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Monthly Gains (Vert).csv");
+                    writer.write((new MonthlyTable(s.getSymbol() + " Monthly % Gains", s, this.profile.getBenchmark(), this.profile.getMonthlyStatsStartCal(), this.profile.getMonthlyStatsEndCal(), Type.VERTICAL)).toString());
+                    writer.close();
+                }
+                progress += 1.0D / numTables;
+                this.progressBar.setProgress(progress);
+
+                if(technicalStatsEnabled()) {
+                    writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Cumulative Average.csv");
+                    writer.write((new CumulativeTable("", s, this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
+                    writer.close();
+                }
                 progress += 1.0D / (double)numTables;
                 this.progressBar.setProgress(progress);
-                writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Monthly Gains (Horiz).csv");
-                writer.write((new MonthlyTable(s.getSymbol() + " Monthly % Gains", s, this.profile.getBenchmark(), this.profile.getMonthlyStatsStart(), this.profile.getMonthlyStatsEnd(), Type.HORIZONTAL)).toString());
-                writer.close();
-                progress += 1.0D / (double)numTables;
-                this.progressBar.setProgress(progress);
-                writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Monthly Gains (Vert).csv");
-                writer.write((new MonthlyTable(s.getSymbol() + " Monthly % Gains", s, this.profile.getBenchmark(), this.profile.getMonthlyStatsStart(), this.profile.getMonthlyStatsEnd(), Type.VERTICAL)).toString());
-                writer.close();
-                progress += 1.0D / (double)numTables;
-                this.progressBar.setProgress(progress);
-                writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Cumulative Average.csv");
-                writer.write((new CumulativeTable("", s, this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
-                writer.close();
-                progress += 1.0D / (double)numTables;
-                this.progressBar.setProgress(progress);
-                writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Technicals.csv");
-                writer.write((new TechnicalTable(this.profile.technicalsManager, s, this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
-                writer.close();
+
+                if(technicalStatsEnabled()) {
+                    writer = new PrintWriter(currentDir + "/" + s.getSymbol() + " - Technicals.csv");
+                    writer.write((new TechnicalTable(this.profile.technicalsManager, s, this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
+                    writer.close();
+                }
                 progress += 1.0D / (double)numTables;
                 this.progressBar.setProgress(progress);
             }
@@ -746,132 +738,111 @@ public class Controller {
     }
 
     public void validateInput() throws InvalidInputException, SymbolInvalidException {
+
+        // These fields must be filled for any run
         if (this.benchmarkText.getText().isEmpty()) {
             throw new InvalidInputException("Benchmark symbol is empty.");
         } else if (this.profile.getSelectedSecurities().size() == 0) {
             throw new InvalidInputException("No securities selected.");
-        } else if (this.profile.trades.size() == 0) {
-            throw new InvalidInputException("No trades.");
-        } else if (!this.isDateValid(this.monthlyStatsYearStartText.getText() + "/" + this.monthlyStatsMonthStartText.getText() + "/01", "yyyy/mm/dd")) {
-            throw new InvalidInputException("Monthly stats start date invalid.");
-        } else if (!this.isDateValid(this.monthlyStatsYearEndText.getText() + "/" + this.monthlyStatsMonthEndText.getText() + "/01", "yyyy/mm/dd")) {
-            throw new InvalidInputException("Monthly stats end date invalid.");
-        } else if (this.profile.getMonthlyStatsStart().compareTo(this.profile.getMonthlyStatsEnd()) >= 0) {
-            throw new InvalidInputException("Monthly stats start date must precede end date.");
-        } else if (!this.isDateValid(this.technicalStartText.getText(), "yyyy/mm/dd")) {
-            throw new InvalidInputException("Technical stats start date invalid.");
-        } else if (!this.isDateValid(this.technicalEndText.getText(), "yyyy/mm/dd")) {
-            throw new InvalidInputException("Technical stats end date invalid.");
-        } else if (this.profile.getWindowStartCal().compareTo(this.profile.getWindowEndCal()) >= 0) {
-            throw new InvalidInputException("Technical stats start date must precede end date.");
-        } else {
-            Iterator var1 = this.profile.trades.iterator();
+        }
+        for(Security s: this.profile.getSelectedSecurities()){
+            if(s.getSymbol() == "None")
+                throw new InvalidInputException("Selected security does not have a symbol.");
+        }
+        if (this.profile.getOutputDirectory().isEmpty())
+            throw new InvalidInputException("Output directory field empty.");
 
-            while(var1.hasNext()) {
-                Trade t = (Trade)var1.next();
-                if (t.getSecurity().getSymbol() == "None") {
-                    throw new InvalidInputException("All trades must select security.");
-                }
 
-                ObservableValue var10002;
-                if (!this.isDateValid((String)this.tradesTableEntryColumn.getCellObservableValue(t).getValue(), "yyyy/mm/dd")) {
-                    var10002 = this.tradesTableEntryColumn.getCellObservableValue(t);
-                    throw new InvalidInputException("Trade entry date " + var10002 + " is invalid.");
-                }
+        // Monthly stats specific validation
+        if(monthlyStatsEnabled()){
+            if (!this.isDateValid(this.monthlyStatsStartText.getText() + "/01", "yyyy/mm/dd")) {
+                throw new InvalidInputException("Monthly stats start date invalid.");
+            } else if (!this.isDateValid(this.monthlyStatsEndText.getText()+ "/01", "yyyy/mm/dd")) {
+                throw new InvalidInputException("Monthly stats end date invalid.");
+            } else if (this.profile.getMonthlyStatsStart().compareTo(this.profile.getMonthlyStatsEnd()) >= 0) {
+                throw new InvalidInputException("Monthly stats start date must precede end date.");
+            }
+        }
 
-                if (!this.isDateValid((String)this.tradesTableExitColumn.getCellObservableValue(t).getValue(), "yyyy/mm/dd")) {
-                    var10002 = this.tradesTableExitColumn.getCellObservableValue(t);
-                    throw new InvalidInputException("Trade exit date " + var10002 + " is invalid.");
-                }
+        // Technical stats specific validation
+        if(technicalStatsEnabled()) {
+            if (!this.isDateValid(this.technicalStartText.getText(), "yyyy/mm/dd")) {
+                throw new InvalidInputException("Technical stats start date invalid.");
+            } else if (!this.isDateValid(this.technicalEndText.getText(), "yyyy/mm/dd")) {
+                throw new InvalidInputException("Technical stats end date invalid.");
+            } else if (this.profile.getWindowStartCal().compareTo(this.profile.getWindowEndCal()) >= 0) {
+                throw new InvalidInputException("Technical stats start date must precede end date.");
             }
 
-            var1 = this.profile.getSelectedSecurities().iterator();
+            for(TextField field: this.technicalFieldMapping.keySet()){
+                try {
+                    Integer.parseInt(field.getText());
 
-            while(true) {
-                ArrayList securityTrades;
-                do {
-                    if (!var1.hasNext()) {
-                        if (this.profile.getOutputDirectory().isEmpty()) {
-                            throw new InvalidInputException("Output directory empty");
-                        }
+                    if(this.profile.technicalsManager.getSelected(this.technicalFieldMapping.get(field).getKey())){
+                        if (Integer.parseInt(field.getText()) < 1)
+                            throw new InvalidInputException("Selected technical indicator parameter must be greater than 0.");
 
-                        var1 = this.technicalFieldMapping.keySet().iterator();
-
-                        TextField field;
-                        label120:
-                        do {
-                            while(var1.hasNext()) {
-                                field = (TextField)var1.next();
-                                if (field.getText() == null) {
-                                    continue label120;
-                                }
-
-                                try {
-                                    Integer.parseInt(field.getText());
-                                } catch (NumberFormatException var8) {
-                                    if(this.profile.technicalsManager.getSelected((TechnicalType)((Pair)this.technicalFieldMapping.get(field)).getKey())) {
-                                        throw new InvalidInputException("Technical indicator parameter not an integer.");
-                                    }else{
-                                        continue;
-                                    }
-                                } catch (NullPointerException var9) {
-                                    continue;
-                                }
-
-                                if (Integer.parseInt(field.getText()) < 1 && this.profile.technicalsManager.getSelected((TechnicalType)((Pair)this.technicalFieldMapping.get(field)).getKey())) {
-                                    throw new InvalidInputException("Selected technical indicator parameter must be greater than 0.");
-                                }
-
-                                if (Integer.parseInt(field.getText()) < 0) {
-                                    throw new InvalidInputException("Technical indicator parameter must be greater than 0.");
-                                }
-                            }
-
-                            if (this.FSORelBMSelect.isSelected()) {
-                                throw new InvalidInputException("FSO indicator relative to benchmark is not implemented.");
-                            }
-
-                            return;
-                        } while(!this.profile.technicalsManager.getSelected((TechnicalType)((Pair)this.technicalFieldMapping.get(field)).getKey()));
-
-                        throw new InvalidInputException("Selected technical indicator field empty.");
+                        if (Integer.parseInt(field.getText()) < 0)
+                            throw new InvalidInputException("Selected technical indicator parameter must be greater than 0.");
                     }
 
-                    Security s = (Security)var1.next();
-                    securityTrades = new ArrayList();
-                    Iterator var4 = this.profile.trades.iterator();
+                } catch (NumberFormatException e) {
+                    if(this.profile.technicalsManager.getSelected(this.technicalFieldMapping.get(field).getKey()))
+                        throw new InvalidInputException("Technical indicator parameter not an integer.");
 
-                    while(var4.hasNext()) {
-                        Trade t = (Trade)var4.next();
-                        if (t.getSecurity() == s) {
-                            securityTrades.add(t);
-                        }
-                    }
-                } while(securityTrades.size() == 0);
+                } catch (NullPointerException e) {}
+            }
 
-                int numPeriods = ((Trade)securityTrades.get(0)).getNumPeriods();
-                int startYear = ((Trade)securityTrades.get(0)).getStartCal().get(1);
-                Iterator var6 = securityTrades.iterator();
+            if (this.FSORelBMSelect.isSelected())
+                throw new InvalidInputException("FSO indicator relative to benchmark is not implemented.");
+        }
 
-                while(var6.hasNext()) {
-                    Trade t = (Trade)var6.next();
-                    String var14;
-                    if (t.getNumPeriods() != numPeriods) {
-                        var14 = t.getSecurity().getSymbol();
-                        throw new InvalidInputException("Trade " + var14 + " with entry " + t.getStart() + " has an invalid number of periods. All trades for a security must have the same number of periods.");
-                    }
+        // Seasonality gains specific validation
+        if(seasonalityEnabled()){
 
-                    if (t.getStartCal().get(1) != startYear) {
-                        var14 = t.getSecurity().getSymbol();
-                        throw new InvalidInputException("Trade " + var14 + " with entry " + t.getStart() + " has an invalid entry year. All trades for a security must have the same entry year.");
-                    }
+            // Validate the trades
+            for(Trade t: this.profile.trades){
+                if (t.getSecurity().getSymbol() == "None")
+                    throw new InvalidInputException("All trades must select security.");
 
-                    if (t.getStartCal().compareTo(t.getEndCal()) > 0) {
-                        var14 = t.getSecurity().getSymbol();
-                        throw new InvalidInputException("Trade " + var14 + " with entry " + t.getStart() + " has an invalid entry date. All trades must have entry preceding exit.");
-                    }
+                if (!this.isDateValid(this.tradesTableEntryColumn.getCellObservableValue(t).getValue(), "yyyy/mm/dd"))
+                    throw new InvalidInputException("Trade entry date " + this.tradesTableEntryColumn.getCellObservableValue(t) + " is invalid.");
+
+                if (!this.isDateValid(this.tradesTableExitColumn.getCellObservableValue(t).getValue(), "yyyy/mm/dd"))
+                    throw new InvalidInputException("Trade exit date " + this.tradesTableExitColumn.getCellObservableValue(t).getValue() + " is invalid.");
+            }
+
+            // validate that all trades for a particular security do not violate any rules
+            for(Security s: this.profile.getSelectedSecurities()){
+                ArrayList<Trade> securityTrades = new ArrayList();
+                for(Trade t: this.profile.trades) {
+                    if (t.getSecurity() == s) securityTrades.add(t);
+                }
+
+                int numPeriods = securityTrades.get(0).getNumPeriods();
+                int startYear = securityTrades.get(0).getStartCal().get(Calendar.YEAR);
+
+                for(Trade t: securityTrades){
+                    if (t.getNumPeriods() != numPeriods)
+                        throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid number of periods. All trades for a security must have the same number of periods.");
+
+                    if (t.getStartCal().get(1) != startYear)
+                        throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid entry year. All trades for a security must have the same entry year.");
+
+                    if (t.getStartCal().compareTo(t.getEndCal()) > 0)
+                        throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid entry date. All trades must have entry preceding exit.");
                 }
             }
         }
+    }
+
+    boolean monthlyStatsEnabled(){
+        return !this.monthlyStatsStartText.getText().isEmpty();
+    }
+    boolean technicalStatsEnabled(){
+        return !this.technicalStartText.getText().isEmpty();
+    }
+    boolean seasonalityEnabled(){
+        return this.profile.trades.size() > 0;
     }
 }
