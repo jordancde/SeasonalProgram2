@@ -29,16 +29,11 @@ public class MovingAverageIndicator extends Indicator {
         List<Double> inputValues = s.getValues();
         Double averageGain = 0.0D;
         Double averageLoss = 0.0D;
-        outputValues.add(null);
 
-        for(int i = 1; i < this.period; ++i) {
-            if ((Double)inputValues.get(i - 1) < (Double)inputValues.get(i)) {
-                averageGain = averageGain + ((Double)inputValues.get(i) - (Double)inputValues.get(i - 1));
-            }
-
-            if ((Double)inputValues.get(i - 1) > (Double)inputValues.get(i)) {
-                averageLoss = averageLoss + ((Double)inputValues.get(i - 1) - (Double)inputValues.get(i));
-            }
+        for(int i = 1; i <= this.period; ++i) {
+            Double diff = (Double)inputValues.get(i) - (Double)inputValues.get(i - 1);
+            averageGain += diff > 0.0D ? diff : 0.0D;
+            averageLoss += diff > 0.0D ? 0.0D : -diff;
 
             outputValues.add(null);
         }
@@ -46,14 +41,18 @@ public class MovingAverageIndicator extends Indicator {
         averageGain = averageGain / (double)this.period;
         averageLoss = averageLoss / (double)this.period;
 
-        for(int i = this.period; i < inputValues.size(); ++i) {
+        for(int i = this.period + 1; i < inputValues.size(); ++i) {
             Double RS = averageGain / averageLoss;
             Double RSI = 100.0D - 100.0D / (1.0D + RS);
             outputValues.add(RSI);
             Double diff = (Double)inputValues.get(i) - (Double)inputValues.get(i - 1);
-            averageGain = (averageGain * 13.0D + (diff > 0.0D ? diff : 0.0D)) / 14.0D;
-            averageLoss = (averageLoss * 13.0D + (diff > 0.0D ? 0.0D : -diff)) / 14.0D;
+            averageGain = (averageGain * (period - 1) + (diff > 0.0D ? diff : 0.0D)) / period;
+            averageLoss = (averageLoss * (period - 1) + (diff > 0.0D ? 0.0D : -diff)) / period;
         }
+
+        Double RS = averageGain / averageLoss;
+        Double RSI = 100.0D - 100.0D / (1.0D + RS);
+        outputValues.add(RSI);
 
         return new Series("RSI", s.getDates(), outputValues);
     }
@@ -71,7 +70,7 @@ public class MovingAverageIndicator extends Indicator {
                 Series relCloses = this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses());
                 return this.getEMA(relCloses, start, end, this.period);
             case RSI:
-                return this.getRSI(this.security.getCloses());
+                return this.getRSI(this.security.getCloses().trim(this.start, this.end));
             case RSI_REL:
                 return this.getRSI(this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses()));
             default:
