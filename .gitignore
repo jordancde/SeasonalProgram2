@@ -1,2 +1,2 @@
-./target/*
-!./target/SeasonalProgram-2.0.jar
+target/*
+!target/SeasonalProgram-2.0.jar
