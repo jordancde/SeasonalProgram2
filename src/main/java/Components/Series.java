@@ -1,6 +1,7 @@
 package Components;
 
 import Components.Exceptions.InvalidInputException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -100,6 +101,8 @@ public class Series implements Serializable {
     public Series getRatioVs(Series other) {
         List<Double> divided = new ArrayList();
 
+        other = other.alignTo(this);
+
         for(int i = 0; i < this.values.size(); ++i) {
             if (this.values.get(i) != null && other.values.get(i) != null) {
                 divided.add((Double)this.values.get(i) / (Double)other.values.get(i));
@@ -162,6 +165,8 @@ public class Series implements Serializable {
     }
 
     public int getNumPositiveVs(Series other) {
+        other = other.alignTo(this);
+
         int count = 0;
 
         for(int i = 0; i < other.values.size(); ++i) {
@@ -206,6 +211,7 @@ public class Series implements Serializable {
     }
 
     public Series getDiffVs(Series other) {
+        other = other.alignTo(this);
         List<Double> diff = new ArrayList();
 
         for(int i = 0; i < Math.min(other.values.size(), this.values.size()); ++i) {
@@ -262,6 +268,7 @@ public class Series implements Serializable {
     }
 
     public Series getRelativePerformanceVs(Series other) {
+        other = other.alignTo(this);
         List<Double> results = new ArrayList();
 
         for(int i = 0; i < this.values.size(); ++i) {
@@ -314,5 +321,62 @@ public class Series implements Serializable {
         }
 
         return new Series(this.name, dates, values);
+    }
+
+    // Use dates for this series
+    // If this has a date that base does not, skip it
+    // If base has a value that this does not, create a duplicate entry in this with missing date
+    public Series alignTo(Series base){
+        List<Double> outputValues = new ArrayList<>();
+        List<Calendar> outputDates = new ArrayList<>();
+
+        int thisSeriesIndex = 0;
+        int baseSeriesIndex = 0;
+
+        for(;baseSeriesIndex < base.getDates().size();baseSeriesIndex++){
+
+            Calendar baseDate = base.getDates().get(baseSeriesIndex);
+            Calendar thisDate = this.getDates().get(thisSeriesIndex);
+
+            // Skip dates that this has that base does not
+            while(thisDate.before(baseDate) && thisSeriesIndex < this.getDates().size()){
+                thisSeriesIndex++;
+                thisDate = this.getDates().get(thisSeriesIndex);
+            }
+
+            // we have reached the end of this
+            if(thisSeriesIndex >= this.getDates().size()) break;
+
+            outputDates.add(baseDate);
+
+            // now this is either equal to or some dates passed base
+
+            // if equal to base
+            if(thisDate.compareTo(baseDate) == 0){
+                outputValues.add(this.getValues().get(thisSeriesIndex));
+                thisSeriesIndex++;
+
+                // if some dates past base
+            }else if(thisDate.after(baseDate)){
+                if(outputValues.size() == 0){
+                    outputValues.add(null);
+                }else{
+                    outputValues.add(outputValues.get(outputValues.size()-1));
+                }
+            }
+        }
+
+        while(baseSeriesIndex < base.getDates().size()){
+            if(outputValues.size() == 0){
+                outputValues.add(null);
+            }else{
+                outputValues.add(outputValues.get(outputValues.size()-1));
+            }
+            outputDates.add(base.getDates().get(baseSeriesIndex));
+
+            baseSeriesIndex++;
+        }
+
+        return new Series(this.name, outputDates, outputValues);
     }
 }

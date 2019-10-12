@@ -112,10 +112,10 @@ public class TechnicalTable extends Table {
                 series.add(this.security.getCloses().getCumulativeGains(this.start, this.end).trim(this.start, this.end));
                 break;
             case BENCHMARK_PERCENT_GAIN:
-                series.add(this.benchmark.getCloses().getCumulativeGains(this.start, this.end).trim(this.start, this.end));
+                series.add(this.benchmark.getCloses().alignTo(this.security.getCloses()).getCumulativeGains(this.start, this.end).trim(this.start, this.end));
                 break;
             case BENCHMARK_CLOSE:
-                series.add(this.benchmark.getCloses().trim(this.start, this.end));
+                series.add(this.benchmark.getCloses().alignTo(this.security.getCloses()).trim(this.start, this.end));
                 break;
             case REL_STR_VS_BM_PERCENT_GAIN:
                 series.add(this.security.getCloses().getCumulativeGains(this.start, this.end).getRelativePerformanceVs(this.benchmark.getCloses().getCumulativeGains(this.start, this.end)).trim(this.start, this.end));
