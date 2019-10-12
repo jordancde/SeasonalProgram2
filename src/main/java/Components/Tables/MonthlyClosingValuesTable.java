@@ -35,8 +35,9 @@ public class MonthlyClosingValuesTable extends Table {
         endYear = end.get(1);
         int startMonth = start.get(2);
         int endMonth = end.get(2);
-        Calendar securityStart = new GregorianCalendar(startYear, 0, 1);
-        Calendar securityEnd = new GregorianCalendar(endYear, 12, 31);
+        Calendar securityStart = new GregorianCalendar(startYear, startMonth, 1);
+        Calendar securityEnd = new GregorianCalendar(endYear, endMonth, 1);
+        securityEnd.set(Calendar.DAY_OF_MONTH, securityEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         s.refresh(securityStart, securityEnd);
 

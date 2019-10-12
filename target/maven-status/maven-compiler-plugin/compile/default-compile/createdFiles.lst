@@ -45,5 +45,4 @@ Components/Tables/SecurityTradesTable.class
 Components/CorrelationIndicator.class
 View/Controller$3.class
 View/Controller$9.class
-Components/Security.class
 Components/MACDIndicator.class

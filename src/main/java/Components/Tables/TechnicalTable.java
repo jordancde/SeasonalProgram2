@@ -34,6 +34,11 @@ public class TechnicalTable extends Table {
         this.benchmark = benchmark;
         this.start = start;
         this.end = end;
+
+        // need to refresh in case of security symbol change
+        this.security.refresh(this.start, this.end);
+        this.benchmark.refresh(this.start, this.end);
+
         List<Series> series = this.getSeries();
         if (series.size() != 0) {
             List<String> titleRow = new ArrayList();

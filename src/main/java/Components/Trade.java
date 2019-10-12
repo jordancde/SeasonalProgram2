@@ -87,7 +87,7 @@ public class Trade implements Serializable {
 
             dates.add((Calendar)start.clone());
             Double finalValue = endingValue / startingValue - 1.0D;
-            values.add(this.isLong ? finalValue : -1.0D * finalValue);
+            values.add(this.isLong || s == benchmark ? finalValue : -1.0D * finalValue);
             start.add(1, 1);
             end.add(1, 1);
         }

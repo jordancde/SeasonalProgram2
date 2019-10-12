@@ -35,6 +35,27 @@ public class ManualInputParser {
     private static ManualInputParser single_instance = null;
     public Map<String, SecuritySeries> entries;
 
+    // Handle multiple formats
+    Calendar parseDate(String dateString) throws InvalidInputException {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy/MM/dd");
+
+        Date d;
+        try {
+            d = sdf1.parse(dateString);
+        }catch(ParseException e){
+            try{
+                d = sdf2.parse(dateString);
+            }catch(ParseException p){
+                throw new InvalidInputException("Date in manual input file invalid.");
+            }
+        }
+
+        c.setTime(d);
+        return c;
+    }
+
     public void refresh() throws InvalidInputException {
 
         entries = new HashMap();
@@ -58,7 +79,7 @@ public class ManualInputParser {
         List<String> symbolHeaders = csv.get(columnHeadersIndex - 1);
 
         String currentSymbol = "";
-        boolean descending = true;
+        boolean descending = false;
 
         for(int col = 0; col < columnHeaders.size(); col++){
 
@@ -92,32 +113,24 @@ public class ManualInputParser {
 
             if(columnHeaders.get(col).trim().toLowerCase().equals("date")){
                 // if we're in the date column
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                try {
-                    Calendar firstDate = new GregorianCalendar();
-                    firstDate.setTime(sdf.parse(csv.get(columnHeadersIndex + 1).get(col)));
 
-                    Calendar secondDate = new GregorianCalendar();
-                    firstDate.setTime(sdf.parse(csv.get(columnHeadersIndex + 2).get(col)));
+                Calendar firstDate = parseDate(csv.get(columnHeadersIndex + 1).get(col));
+                Calendar secondDate = parseDate(csv.get(columnHeadersIndex + 2).get(col));
 
-                    if(firstDate.compareTo(secondDate)>0) descending = false;
+                if(firstDate.compareTo(secondDate)>0) descending = true;
 
-                    for(int row = columnHeadersIndex + 1; row < csv.size(); row++) {
-                        String cell = csv.get(row).get(col);
-                        if(cell.isEmpty()) break;
+                for(int row = columnHeadersIndex + 1; row < csv.size(); row++) {
+                    String cell = csv.get(row).get(col);
+                    if (cell.isEmpty()) break;
 
-                        Calendar c = new GregorianCalendar();
-                        c.setTime(sdf.parse(cell));
+                    Calendar c = parseDate(cell);
 
-                        // values are in descending order
-                        if(descending){
-                            series.add(0,c);
-                        }else{
-                            series.add(c);
-                        }
+                    // values are in descending order
+                    if (descending) {
+                        series.add(0, c);
+                    } else {
+                        series.add(c);
                     }
-                }catch(ParseException e){
-                    throw new InvalidInputException("Date in manual input file invalid.");
                 }
 
             }else{

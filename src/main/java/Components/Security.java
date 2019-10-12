@@ -49,7 +49,11 @@ public class Security implements Serializable {
 
     void refreshFromYahoo(Calendar from, Calendar to) throws SymbolInvalidException {
         // Case where we have to check yahoo finance
-        if (this.closes == null || this.closes.getValues().size() == 0 || ((Calendar)this.closes.getDates().get(0)).compareTo(from) > 0 || ((Calendar)this.closes.getDates().get(this.closes.getDates().size() - 1)).compareTo(to) < 0) {
+        if (this.closes == null || this.closes.getValues().size() == 0 ||
+                // case where symbol of security has changed
+                !this.closes.getName().contains(getSymbol()) ||
+                ((Calendar)this.closes.getDates().get(0)).compareTo(from) > 0 ||
+                ((Calendar)this.closes.getDates().get(this.closes.getDates().size() - 1)).compareTo(to) < 0) {
             from.add(5, -10);
             to.add(5, 10);
             Stock s = null;
@@ -96,7 +100,18 @@ public class Security implements Serializable {
 
         ManualInputParser manualInputParser = ManualInputParser.getInstance();
 
-        if(manualInputParser.hasSymbol(this.getSymbol())){
+        boolean useInputFile = false;
+
+        if(manualInputParser.hasSymbol(this.getSymbol())) {
+            List<Calendar> dates = manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.DATE);
+            if (from.after(dates.get(0)) && to.before(dates.get(dates.size() - 1))){
+                useInputFile = true;
+            }else{
+                System.out.println("Data range for symbol " + getSymbol() + " in manual input file does not cover dates, using Yahoo");
+            }
+        }
+
+        if(useInputFile){
             List<Calendar> dates = manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.DATE);
 
             this.closes = new Series(this.getSymbol() + " Close", dates, manualInputParser.getSeries(this.getSymbol(), ManualInputParser.Type.CLOSE));
