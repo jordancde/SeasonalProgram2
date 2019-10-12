@@ -15,11 +15,6 @@ public class CorrelationIndicator extends Indicator {
     }
 
     public Series getValues() throws SymbolInvalidException, InvalidInputException {
-        Calendar newStart = (Calendar)this.start.clone();
-        newStart.add(5, -this.periods * 4);
-
-        this.security.refresh(newStart, this.end);
-        this.benchmark.refresh(newStart, this.end);
 
         List<Double> values = new ArrayList();
 

@@ -20,12 +20,6 @@ public class FSOIndicator extends Indicator {
     }
 
     public List<Series> getFSO() throws SymbolInvalidException, InvalidInputException {
-        Calendar newStart = (Calendar)this.start.clone();
-        newStart.add(5, -(this.lookBack + this.kPeriods + this.dPeriods) * 4);
-
-        this.security.refresh(newStart, this.end);
-        this.benchmark.refresh(newStart, this.end);
-
         Series k = this.getK(this.security.getCloses(), this.security.getHighs(), this.security.getLows());
         Series d = this.getD(k, this.dPeriods);
         List<Series> series = new ArrayList();
@@ -51,13 +45,16 @@ public class FSOIndicator extends Indicator {
         }
 
         Series kArraySeries = new Series("FSO %K", closes.getDates(), kArray);
-        Series fullK = new Series("FSO %K", closes.getDates(), this.getSMA(kArraySeries.getValues(), this.kPeriods));
+        Series fullK = this.getSMA(kArraySeries, this.kPeriods);
         fullK.name = "FSO %K";
+
         return fullK;
     }
 
     Series getD(Series fullK, int periods) throws SymbolInvalidException {
-        List<Double> dValues = this.getSMA(fullK.getValues(), periods);
-        return new Series("FSO %D", fullK.getDates(), dValues);
+        Series d = this.getSMA(fullK, periods);
+        d.name = "FSO %D";
+
+        return d;
     }
 }

@@ -58,6 +58,7 @@ public class ManualInputParser {
         List<String> symbolHeaders = csv.get(columnHeadersIndex - 1);
 
         String currentSymbol = "";
+        boolean descending = true;
 
         for(int col = 0; col < columnHeaders.size(); col++){
 
@@ -68,7 +69,7 @@ public class ManualInputParser {
                 entries.put(currentSymbol, new SecuritySeries());
 
             List series = new ArrayList();
-            switch(columnHeaders.get(col).trim().toLowerCase()){
+            switch(columnHeaders.get(col).trim().toLowerCase()) {
                 case "date":
                     series = entries.get(currentSymbol).date;
                     break;
@@ -89,24 +90,34 @@ public class ManualInputParser {
                     break;
             }
 
-
             if(columnHeaders.get(col).trim().toLowerCase().equals("date")){
                 // if we're in the date column
-                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    Calendar firstDate = new GregorianCalendar();
+                    firstDate.setTime(sdf.parse(csv.get(columnHeadersIndex + 1).get(col)));
 
-                for(int row = columnHeadersIndex + 1; row < csv.size(); row++) {
-                    String cell = csv.get(row).get(col);
-                    if(cell.isEmpty()) break;
+                    Calendar secondDate = new GregorianCalendar();
+                    firstDate.setTime(sdf.parse(csv.get(columnHeadersIndex + 2).get(col)));
 
-                    try {
+                    if(firstDate.compareTo(secondDate)>0) descending = false;
+
+                    for(int row = columnHeadersIndex + 1; row < csv.size(); row++) {
+                        String cell = csv.get(row).get(col);
+                        if(cell.isEmpty()) break;
+
                         Calendar c = new GregorianCalendar();
                         c.setTime(sdf.parse(cell));
 
                         // values are in descending order
-                        series.add(0,c);
-                    }catch(ParseException e){
-                        throw new InvalidInputException("Date in manual input file invalid.");
+                        if(descending){
+                            series.add(0,c);
+                        }else{
+                            series.add(c);
+                        }
                     }
+                }catch(ParseException e){
+                    throw new InvalidInputException("Date in manual input file invalid.");
                 }
 
             }else{
@@ -117,7 +128,11 @@ public class ManualInputParser {
                     if(cell.isEmpty()) break;
 
                     // values are in descending order
-                    series.add(0,Double.valueOf(cell));
+                    if(descending){
+                        series.add(0,Double.valueOf(cell));
+                    }else{
+                        series.add(Double.valueOf(cell));
+                    }
                 }
             }
         }

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Indicator {
+    int EMA_OFFSET = 250;
     Security security;
     Security benchmark;
     Calendar start;
@@ -35,15 +36,16 @@ public class Indicator {
         return this.security.closes;
     }
 
-    List<Double> getSMA(List<Double> input, int period) {
+   Series getSMA(Series input, int period) {
+        List<Double> inputValues = input.getValues();
         List<Double> values = new ArrayList();
 
-        for(int i = 0; i < input.size(); ++i) {
-            if (i >= period - 1 && input.get(i - period + 1) != null) {
+        for(int i = 0; i < inputValues.size(); ++i) {
+            if (i >= period - 1 && inputValues.get(i - period + 1) != null) {
                 Double sum = 0.0D;
 
                 for(int j = period - 1; j >= 0; --j) {
-                    sum = sum + (Double)input.get(i - j);
+                    sum = sum + inputValues.get(i - j);
                 }
 
                 values.add(sum / (double)period);
@@ -52,33 +54,34 @@ public class Indicator {
             }
         }
 
-        return values;
+       return new Series("EMA ("+period+") "+input.getName(),input.getDates(),values);
     }
 
-    List<Double> getEMA(List<Double> input, int period) {
+    Series getEMA(Series input, Calendar start, Calendar end, int period) throws InvalidInputException {
+        Series trimmedInput = input.trim(start,end,EMA_OFFSET);
+
+        List<Double> inputValues = trimmedInput.getValues();
+
         List<Double> values = new ArrayList();
-        Double previousEMA = 0.0D;
-        Double multiplier = 2.0D / ((double)period + 1.0D);
+        Double previousEMA = 0.0;
+        Double multiplier = 2.0 / (period + 1.0);
 
-        for(int i = 0; i < input.size(); ++i) {
-            if (i >= period - 1 && input.get(i - period + 1) != null) {
-                if (i != period - 1) {
-                    previousEMA = ((Double)input.get(i) - previousEMA) * multiplier + previousEMA;
-                    values.add(previousEMA);
-                } else {
-                    for(int j = period - 1; j >= 0; --j) {
-                        previousEMA = previousEMA + (Double)input.get(i - j);
-                    }
+        Double sum = 0.0;
+        for(int i = 0;i < EMA_OFFSET-1; i++){
+            sum+=inputValues.get(i);
+            values.add(null);
+        }
+        sum+=inputValues.get(EMA_OFFSET-1);
+        previousEMA = sum/Double.valueOf(EMA_OFFSET);
 
-                    previousEMA = previousEMA / (double)period;
-                    values.add(null);
-                }
-            } else {
-                values.add(null);
-            }
+        values.add(previousEMA);
+
+        for(int i = EMA_OFFSET; i < inputValues.size(); i++) {
+            previousEMA = (inputValues.get(i) - previousEMA) * multiplier + previousEMA;
+            values.add(previousEMA);
         }
 
-        return values;
+        return new Series("EMA ("+period+") "+input.getName(),trimmedInput.getDates(),values);
     }
 
     static Double calculateSD(List<Double> numArray) {

@@ -183,29 +183,11 @@ public class Trade implements Serializable {
         return out;
     }
 
-    public int getNumPeriods() throws SymbolInvalidException, InvalidInputException {
-        Calendar start = new GregorianCalendar(this.startYear, this.startMonth - 1, this.startDay);
-        Calendar end = new GregorianCalendar(this.endYear, this.endMonth - 1, this.endDay);
-
-        this.security.refresh(start, end);
-
-        int periods = 0;
-        boolean inPeriod = false;
-        List<Calendar> dates = this.security.getCloses().getDates();
-
-        for(int i = 0; i < dates.size() - 1; ++i) {
-            Calendar current = (Calendar)dates.get(i);
-            Calendar next = (Calendar)dates.get(i + 1);
-            start.set(1, current.get(1));
-            end.set(1, current.get(1));
-            if (!inPeriod && current.compareTo(start) < 0 && next.compareTo(start) >= 0) {
-                inPeriod = true;
-            } else if (inPeriod && current.compareTo(end) < 0 && next.compareTo(end) >= 0) {
-                inPeriod = false;
-                ++periods;
-            }
+    public int getNumPeriods(){
+        if(this.startMonth < this.endMonth || (this.startMonth == this.endMonth && this.startDay <= this.endDay)){
+            return this.endYear - this.startYear + 1;
+        }else {
+            return this.endYear - this.startYear;
         }
-
-        return periods;
     }
 }

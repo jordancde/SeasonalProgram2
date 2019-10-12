@@ -81,8 +81,11 @@ public class TechnicalTable extends Table {
     }
 
     List<Series> buildSeries(Selection selection) throws SymbolInvalidException, InvalidInputException {
-        this.security.refresh(this.start, this.end);
-        this.benchmark.refresh(this.start, this.end);
+        Calendar newStart = (Calendar)this.start.clone();
+        newStart.add(Calendar.MONTH, -18);
+        this.security.refresh(newStart, this.end);
+        this.benchmark.refresh(newStart, this.end);
+
         List<Series> series = new ArrayList();
         switch(selection.type) {
             case CLOSE:

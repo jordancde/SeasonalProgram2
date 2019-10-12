@@ -1,5 +1,7 @@
 package Components;
 
+import Components.Exceptions.InvalidInputException;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -290,6 +292,25 @@ public class Series implements Serializable {
             values.add((Double)this.values.get(index));
             dates.add((Calendar)this.dates.get(index));
             ++index;
+        }
+
+        return new Series(this.name, dates, values);
+    }
+
+    public Series trim(Calendar start, Calendar end, int startOffset) throws InvalidInputException {
+        List<Double> values = new ArrayList();
+        List<Calendar> dates = new ArrayList();
+
+        int index;
+        for(index = 0; start.compareTo((Calendar)this.dates.get(index)) > 0; ++index) {}
+
+        if(index-startOffset + 1 < 0)
+            throw new InvalidInputException("Not enough data available for EMA");
+
+
+        for(int i = Math.max(index-startOffset + 1, 0); i < this.dates.size() && end.compareTo(this.dates.get(i)) > 0; i++){
+            values.add(this.values.get(i));
+            dates.add(this.dates.get(i));
         }
 
         return new Series(this.name, dates, values);

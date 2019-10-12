@@ -24,15 +24,14 @@ public class MovingAverageIndicator extends Indicator {
         this.type = type;
     }
 
-    List<Double> getRSI(Series s) {
+    Series getRSI(Series s) {
         List<Double> outputValues = new ArrayList();
         List<Double> inputValues = s.getValues();
         Double averageGain = 0.0D;
         Double averageLoss = 0.0D;
         outputValues.add(null);
 
-        int i;
-        for(i = 1; i < this.period; ++i) {
+        for(int i = 1; i < this.period; ++i) {
             if ((Double)inputValues.get(i - 1) < (Double)inputValues.get(i)) {
                 averageGain = averageGain + ((Double)inputValues.get(i) - (Double)inputValues.get(i - 1));
             }
@@ -47,7 +46,7 @@ public class MovingAverageIndicator extends Indicator {
         averageGain = averageGain / (double)this.period;
         averageLoss = averageLoss / (double)this.period;
 
-        for(i = this.period; i < inputValues.size(); ++i) {
+        for(int i = this.period; i < inputValues.size(); ++i) {
             Double RS = averageGain / averageLoss;
             Double RSI = 100.0D - 100.0D / (1.0D + RS);
             outputValues.add(RSI);
@@ -56,39 +55,28 @@ public class MovingAverageIndicator extends Indicator {
             averageLoss = (averageLoss * 13.0D + (diff > 0.0D ? 0.0D : -diff)) / 14.0D;
         }
 
-        return outputValues;
+        return new Series("RSI", s.getDates(), outputValues);
     }
 
     public Series getValues() throws SymbolInvalidException, InvalidInputException {
-        Calendar newStart = (Calendar)this.start.clone();
-        newStart.add(5, -this.period * 4);
-        this.security.refresh(newStart, this.end);
-        this.benchmark.refresh(newStart, this.end);
-        List values;
         switch(this.type) {
             case SIMPLE:
-                values = this.getSMA(this.security.getCloses().getValues(), this.period);
-                break;
+                return this.getSMA(this.security.getCloses(), this.period);
             case EMA:
-                values = this.getEMA(this.security.getCloses().getValues(), this.period);
-                break;
+                return this.getEMA(this.security.getCloses(), this.start, this.end, this.period);
             case SIMPLE_REL:
-                values = this.getSMA(this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses()).getValues(), this.period);
-                break;
+                Series relative = this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses());
+                return this.getSMA(relative, this.period);
             case EMA_REL:
-                values = this.getEMA(this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses()).getValues(), this.period);
-                break;
+                Series relCloses = this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses());
+                return this.getEMA(relCloses, start, end, this.period);
             case RSI:
-                values = this.getRSI(this.security.getCloses());
-                break;
+                return this.getRSI(this.security.getCloses());
             case RSI_REL:
-                values = this.getRSI(this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses()));
-                break;
+                return this.getRSI(this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses()));
             default:
-                values = this.security.getCloses().getValues();
+                return this.security.getCloses();
         }
-
-        return new Series(this.name, this.security.getCloses().getDates(), values);
     }
 
     public static enum Type {
