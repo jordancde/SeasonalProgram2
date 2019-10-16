@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.util.Pair;
 
 public class Profile implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -35,6 +33,7 @@ public class Profile implements Serializable {
     Security benchmark;
     String outputDirectory;
     public TechnicalsManager technicalsManager;
+    boolean useAdjustedCloses;
     public transient ObservableList<Trade> trades;
     public transient ObservableList<Security> securities;
     public transient ObservableList<String> selectedSecurityNames;
@@ -97,6 +96,7 @@ public class Profile implements Serializable {
         this.windowEnd = null;
         this.benchmark = new Security("");
         this.outputDirectory = "";
+        this.useAdjustedCloses = false;
         this.addSecurityListener();
     }
 
@@ -130,6 +130,7 @@ public class Profile implements Serializable {
             this.windowEnd = p.windowEnd;
             this.outputDirectory = p.outputDirectory;
             this.technicalsManager = p.technicalsManager;
+            this.useAdjustedCloses = p.useAdjustedCloses;
             if (this.trades == null) {
                 this.trades = FXCollections.observableArrayList(new ArrayList());
             } else {
@@ -219,18 +220,6 @@ public class Profile implements Serializable {
             if (s.isSelected()) {
                 out.add(s);
             }
-        }
-
-        return out;
-    }
-
-    public List<Trade> getSelectedTrades() {
-        List<Trade> out = new ArrayList();
-        Iterator var2 = this.trades.iterator();
-
-        while(var2.hasNext()) {
-            Trade s = (Trade)var2.next();
-            out.add(s);
         }
 
         return out;
@@ -340,5 +329,13 @@ public class Profile implements Serializable {
 
     public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
+    }
+
+    public boolean getUseAdjustedCloses() {
+        return this.useAdjustedCloses;
+    }
+
+    public void setUseAdjustedCloses(boolean useAdjusted) {
+        this.useAdjustedCloses = useAdjusted;
     }
 }

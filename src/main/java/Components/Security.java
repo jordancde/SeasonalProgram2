@@ -25,7 +25,12 @@ public class Security implements Serializable {
     Series closes;
     Series lows;
     Series volumes;
+    boolean usingAdjustedCloses;
     private transient StringProperty symbol;
+
+    // yeah this is kind of sketchy, only simple way I could think to do this at this point
+    // modified by controller when the checkbox is selected/unselected
+    public static transient boolean USE_ADJUSTED_CLOSE = false;
 
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
@@ -49,7 +54,8 @@ public class Security implements Serializable {
 
     void refreshFromYahoo(Calendar from, Calendar to) throws SymbolInvalidException {
         // Case where we have to check yahoo finance
-        if (this.closes == null || this.closes.getValues().size() == 0 ||
+        if (USE_ADJUSTED_CLOSE != this.usingAdjustedCloses ||
+                this.closes == null || this.closes.getValues().size() == 0 ||
                 // case where symbol of security has changed
                 !this.closes.getName().contains(getSymbol()) ||
                 ((Calendar)this.closes.getDates().get(0)).compareTo(from) > 0 ||
@@ -82,8 +88,14 @@ public class Security implements Serializable {
                 opens.add(h.getOpen().doubleValue());
                 highs.add(h.getHigh().doubleValue());
                 lows.add(h.getLow().doubleValue());
-                closes.add(h.getClose().doubleValue());
                 volumes.add(h.getVolume().doubleValue());
+
+                if(USE_ADJUSTED_CLOSE){
+                    closes.add(h.getAdjClose().doubleValue());
+                }else{
+                    closes.add(h.getClose().doubleValue());
+                }
+                usingAdjustedCloses = USE_ADJUSTED_CLOSE;
             }
 
             this.closes = new Series(s.getSymbol() + " Close", dates, closes);

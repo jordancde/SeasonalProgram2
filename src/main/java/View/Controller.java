@@ -212,6 +212,8 @@ public class Controller {
     private ProgressBar progressBar;
     @FXML
     private Button updateButton;
+    @FXML
+    private CheckBox adjustedClosesSelect;
 
     HashMap<CheckBox, TechnicalType> boxMapping = new HashMap();
     HashMap<TextField, Pair<TechnicalType, Integer>> technicalFieldMapping = new HashMap();
@@ -254,6 +256,7 @@ public class Controller {
             String text = value > 0 ? value.toString() : null;
             field.setText(text);
         });
+        this.adjustedClosesSelect.setSelected(this.profile.getUseAdjustedCloses());
     }
 
     public List<String> listProfiles() throws IOException, ClassNotFoundException {
@@ -418,6 +421,14 @@ public class Controller {
                         });
                     }
                 })).start();
+            }
+        });
+
+        this.adjustedClosesSelect.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                profile.setUseAdjustedCloses(newValue);
+                Security.USE_ADJUSTED_CLOSE = newValue;
             }
         });
     }

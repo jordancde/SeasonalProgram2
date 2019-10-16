@@ -54,11 +54,11 @@ public class Indicator {
             }
         }
 
-       return new Series("EMA ("+period+") "+input.getName(),input.getDates(),values);
+       return new Series("SMA ("+period+") "+input.getName(),input.getDates(),values);
     }
 
     Series getEMA(Series input, Calendar start, Calendar end, int period) throws InvalidInputException {
-        Series trimmedInput = input.trim(start,end,EMA_OFFSET);
+        Series trimmedInput = input.trim(start,end,EMA_OFFSET+period);
 
         List<Double> inputValues = trimmedInput.getValues();
 
@@ -67,16 +67,16 @@ public class Indicator {
         Double multiplier = 2.0 / (period + 1.0);
 
         Double sum = 0.0;
-        for(int i = 0;i < EMA_OFFSET-1; i++){
+        for(int i = 0;i < period -1; i++){
             sum+=inputValues.get(i);
             values.add(null);
         }
-        sum+=inputValues.get(EMA_OFFSET-1);
-        previousEMA = sum/Double.valueOf(EMA_OFFSET);
+        sum+=inputValues.get(period-1);
+        previousEMA = sum/Double.valueOf(period);
 
         values.add(previousEMA);
 
-        for(int i = EMA_OFFSET; i < inputValues.size(); i++) {
+        for(int i = period; i < inputValues.size(); i++) {
             previousEMA = (inputValues.get(i) - previousEMA) * multiplier + previousEMA;
             values.add(previousEMA);
         }
