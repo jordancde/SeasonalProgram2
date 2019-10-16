@@ -149,7 +149,7 @@
                         <TableView fx:id="securitiesTable" editable="true" prefHeight="268.0" prefWidth="346.0">
                           <columns>
                             <TableColumn fx:id="securitiesTableSelectedColumn" prefWidth="66.88182604312897" text="Selected" />
-                              <TableColumn fx:id="securitiesTableSecurityColumn" prefWidth="268.5000228881836" text="Security" />
+                              <TableColumn fx:id="securitiesTableSecurityColumn" prefWidth="278.0" text="Security" />
                           </columns>
                         </TableView>
                         <HBox prefHeight="56.0" prefWidth="346.0" spacing="10.0">
