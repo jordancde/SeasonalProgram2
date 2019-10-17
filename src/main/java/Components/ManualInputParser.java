@@ -14,11 +14,12 @@ public class ManualInputParser {
 
     public class SecuritySeries {
         List<Calendar> date = new ArrayList();
-        List<Double> open = new ArrayList();;
-        List<Double> high = new ArrayList();;
-        List<Double> low = new ArrayList();;
-        List<Double> close = new ArrayList();;
-        List<Double> volume = new ArrayList();;
+        List<Double> open = new ArrayList();
+        List<Double> high = new ArrayList();
+        List<Double> low = new ArrayList();
+        List<Double> close = new ArrayList();
+        List<Double> adjustedClose = new ArrayList();
+        List<Double> volume = new ArrayList();
     }
 
     public enum Type {
@@ -27,6 +28,7 @@ public class ManualInputParser {
         HIGH,
         LOW,
         CLOSE,
+        ADJUSTED_CLOSE,
         VOLUME
     }
 
@@ -109,6 +111,12 @@ public class ManualInputParser {
                 case "volume":
                     series = entries.get(currentSymbol).volume;
                     break;
+                case "adjusted close":
+                    series = entries.get(currentSymbol).adjustedClose;
+                    break;
+                case "adj close":
+                    series = entries.get(currentSymbol).adjustedClose;
+                    break;
             }
 
             if(columnHeaders.get(col).trim().toLowerCase().equals("date")){
@@ -120,6 +128,9 @@ public class ManualInputParser {
                 if(firstDate.compareTo(secondDate)>0) descending = true;
 
                 for(int row = columnHeadersIndex + 1; row < csv.size(); row++) {
+
+                    // if we have a case where some sets are longer than others in the csv
+                    if(col >= csv.get(row).size()) break;
                     String cell = csv.get(row).get(col);
                     if (cell.isEmpty()) break;
 
@@ -137,6 +148,9 @@ public class ManualInputParser {
                 // if we're not
 
                 for(int row = columnHeadersIndex + 1; row < csv.size(); row++) {
+
+                    // if we have a case where some sets are longer than others in the csv
+                    if(col >= csv.get(row).size()) break;
                     String cell = csv.get(row).get(col);
                     if(cell.isEmpty()) break;
 
@@ -197,6 +211,8 @@ public class ManualInputParser {
                 return entries.get(symbol).low;
             case CLOSE:
                 return entries.get(symbol).close;
+            case ADJUSTED_CLOSE:
+                return entries.get(symbol).adjustedClose;
             case VOLUME:
                 return entries.get(symbol).volume;
         }

@@ -392,7 +392,7 @@
                                  <children>
                                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                        <children>
-                                          <CheckBox fx:id="adjustedClosesSelect" mnemonicParsing="false" text="Use Adjusted Closes from Yahoo">
+                                          <CheckBox fx:id="adjustedClosesSelect" mnemonicParsing="false" text="Use Adjusted Closes">
                                              <padding>
                                                 <Insets bottom="5.0" top="5.0" />
                                              </padding>

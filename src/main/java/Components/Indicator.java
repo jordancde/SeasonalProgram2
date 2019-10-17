@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Indicator {
-    int EMA_OFFSET = 250;
+    int EMA_OFFSET = 300;
     Security security;
     Security benchmark;
     Calendar start;
@@ -58,7 +58,7 @@ public class Indicator {
     }
 
     Series getEMA(Series input, Calendar start, Calendar end, int period) throws InvalidInputException {
-        Series trimmedInput = input.trim(start,end,EMA_OFFSET+period);
+        Series trimmedInput = input.trim(start,end,EMA_OFFSET);
 
         List<Double> inputValues = trimmedInput.getValues();
 

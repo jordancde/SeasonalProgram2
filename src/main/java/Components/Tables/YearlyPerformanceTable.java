@@ -29,11 +29,11 @@ public class YearlyPerformanceTable extends Table {
         Calendar fullStart = new GregorianCalendar(startYear,0,1);
         Calendar fullEnd = new GregorianCalendar(endYear+1,0,1);
 
-        benchmark.refresh(fullStart, fullEnd);
+        benchmark.forceRefresh(fullStart, fullEnd);
 
         for(Security s: securities) {
 
-            s.refresh(fullStart, fullEnd);
+            s.forceRefresh(fullStart, fullEnd);
 
             ArrayList row = new ArrayList();
             row.add(s.getSymbol());
@@ -59,9 +59,15 @@ public class YearlyPerformanceTable extends Table {
             if (s.getCloses().getDates().size() == 0) {
                 row.add("* No data available");
 
-            } else if(s.getCloses().getDates().get(0).compareTo(start) > 0) {
-                String startDateString = sdf.format(s.getCloses().getDates().get(0).getTime());
-                row.add("* Some data unavailable, starting " + startDateString);
+            } else{
+                if(s.getCloses().getDates().get(0).compareTo(fullStart) > 0) {
+                    String startDateString = sdf.format(s.getCloses().getDates().get(0).getTime());
+                    row.add("* Some data unavailable, starting " + startDateString);
+                }
+                if (s.getCloses().getDates().get(s.getCloses().getDates().size()-1).before(fullEnd)) {
+                    String endDateString = sdf.format(s.getCloses().getDates().get(s.getCloses().getDates().size()-1).getTime());
+                    row.add("* ending " + endDateString);
+                }
             }
 
             this.addRow(row);

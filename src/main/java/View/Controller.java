@@ -661,11 +661,13 @@ public class Controller {
             this.progressBar.setProgress(progress);
             PrintWriter writer;
 
-            if(technicalStatsEnabled()) {
+            // disabled this for now as I need to cover cases when the data ends before the end year of technical stats
+            /*if(technicalStatsEnabled()) {
                 writer = new PrintWriter(dir + "/Sectors Summary.csv");
                 writer.write((new YearlyPerformanceTable(this.profile.getSelectedSecurities(), this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
                 writer.close();
-            }
+            }*/
+
             progress += 1.0D / numTables;
             this.progressBar.setProgress(progress);
 
