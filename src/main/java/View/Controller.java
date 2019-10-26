@@ -3,14 +3,10 @@ package View;
 import Components.ManualInputParser;
 import Components.Profile;
 import Components.Security;
+import Components.Tables.*;
 import Components.Trade;
 import Components.Exceptions.InvalidInputException;
 import Components.Exceptions.SymbolInvalidException;
-import Components.Tables.CumulativeTable;
-import Components.Tables.MonthlyTable;
-import Components.Tables.SecurityTradesTable;
-import Components.Tables.TechnicalTable;
-import Components.Tables.YearlyPerformanceTable;
 import Components.Tables.MonthlyTable.Type;
 import Components.TechnicalsManager.TechnicalType;
 import java.io.File;
@@ -667,6 +663,12 @@ public class Controller {
                 writer.write((new YearlyPerformanceTable(this.profile.getSelectedSecurities(), this.profile.getBenchmark(), this.profile.getWindowStartCal(), this.profile.getWindowEndCal())).toString());
                 writer.close();
             }*/
+
+            if(monthlyStatsEnabled()) {
+                writer = new PrintWriter(dir + "/Thermometer Monthly.csv");
+                writer.write((new ThermometerTable(this.profile.getSelectedSecurities(), this.profile.getBenchmark(), this.profile.getMonthlyStatsStartCal(), this.profile.getMonthlyStatsEndCal())).toString());
+                writer.close();
+            }
 
             progress += 1.0D / numTables;
             this.progressBar.setProgress(progress);

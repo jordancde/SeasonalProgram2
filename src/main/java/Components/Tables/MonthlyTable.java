@@ -5,9 +5,29 @@ import Components.Security;
 import Components.Table;
 import Components.Exceptions.SymbolInvalidException;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MonthlyTable extends Table {
     public MonthlyTable(String title, Security s, Security benchmark, Calendar start, Calendar end, MonthlyTable.Type type) throws SymbolInvalidException, InvalidInputException {
+
+        int startYear = start.get(1);
+        int endYear = end.get(1);
+        int startMonth = start.get(2);
+        int endMonth = end.get(2);
+        Calendar periodStart = new GregorianCalendar(startYear, startMonth, 1);
+        Calendar periodEnd = new GregorianCalendar(endYear, endMonth, 1);
+
+        periodEnd.add(Calendar.MONTH, 1);
+        s.refresh(periodStart, periodEnd);
+
+        // to account for data not available, just use the first full month
+        periodStart = (Calendar)s.getDataStart().clone();
+        if(s.getDataStart().get(Calendar.DAY_OF_MONTH) > 1){
+            periodStart.add(Calendar.MONTH,1);
+            periodStart.set(Calendar.DAY_OF_MONTH,1);
+        }
+        start = periodStart;
+
         String var10002 = s.getSymbol();
         MonthlyGainsTable gainsTable = new MonthlyGainsTable(var10002 + " Monthly % Gains", Components.Tables.MonthlyGainsTable.Type.GAINS, s, benchmark, start, end, true, true);
         var10002 = benchmark.getSymbol();

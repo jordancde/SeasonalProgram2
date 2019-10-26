@@ -1,7 +1,6 @@
 package Components;
 
 import Components.Exceptions.InvalidInputException;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -10,7 +9,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.DoubleStream;
 
 public class Series implements Serializable {
