@@ -14,15 +14,21 @@ public class ThermometerTable extends Table {
     public ThermometerTable(List<Security> securities, Security benchmark, Calendar start, Calendar end) throws InvalidInputException, SymbolInvalidException {
         int startYear = start.get(Calendar.YEAR);
         int endYear = end.get(Calendar.YEAR);
+        int endMonth = end.get(Calendar.MONTH);
 
         Calendar fullStart = new GregorianCalendar(startYear, 0,1);
         Calendar fullEnd = new GregorianCalendar(endYear+1, 0,1);
 
         // refresh beforehand so we can check for first full available year
-        for(Security s: securities) s.refresh(fullStart, fullEnd);
+        for(Security s: securities) s.forceRefresh(fullStart, fullEnd);
 
         for(int i = 0;i < 12; i++){
-            addTableBelow(getMonthTable(securities, benchmark, startYear, endYear, i));
+            // we only need to adjust for the end, since we take the first full year
+            if(i > endMonth){
+                addTableBelow(getMonthTable(securities, benchmark, startYear, endYear - 1, i));
+            }else{
+                addTableBelow(getMonthTable(securities, benchmark, startYear, endYear, i));
+            }
             addRow();
         }
     }
@@ -53,15 +59,23 @@ public class ThermometerTable extends Table {
 
         ArrayList<Trade> trades = new ArrayList();
         for(Security s: securities){
-
             int firstAvailableFullYear = s.getDataStart().get(Calendar.YEAR);
             Calendar startOfYear = new GregorianCalendar(firstAvailableFullYear,0,1);
             if(s.getDataStart().after(startOfYear)){
                 firstAvailableFullYear += 1;
             }
 
-            Calendar tradeStart = new GregorianCalendar(firstAvailableFullYear, month,1);
-            trades.add(new Trade(true, tradeStart, end, s, benchmark, true));
+            int lastAvailableYear = s.getDataEnd().get(Calendar.YEAR);
+            Calendar endOfData = new GregorianCalendar(lastAvailableYear,month,1);
+            endOfData.add(Calendar.MONTH,1);
+            if(s.getDataEnd().before(endOfData)){
+                lastAvailableYear -= 1;
+            }
+
+            Calendar tradeStart = new GregorianCalendar(Math.max(firstAvailableFullYear,startYear), month,1);
+            Calendar tradeEnd = new GregorianCalendar(Math.min(lastAvailableYear,endYear), month,1);
+            tradeEnd.add(Calendar.MONTH,1);
+            trades.add(new Trade(true, tradeStart, tradeEnd, s, benchmark, true));
         }
 
         // sort by average gain
@@ -97,7 +111,7 @@ public class ThermometerTable extends Table {
             row.add(round(t.getGains().getMax()).toString());
             row.add(round(t.getGains().getMin()).toString());
             row.add(round(t.getGains().getFreqPositive()).toString());
-            row.add(round(t.getGains().getFreqPositiveVs(benchmarkTrade.getGains())).toString());
+            row.add(round(t.getGains().trim(start, end).getFreqPositiveVs(benchmarkTrade.getGains().trim(start,end))).toString());
 
             row.add("");
             int firstAvailableYear = t.getGains().getDates().get(0).get(Calendar.YEAR);

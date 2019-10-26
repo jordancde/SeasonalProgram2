@@ -18,15 +18,16 @@ public class MonthlyTable extends Table {
         Calendar periodEnd = new GregorianCalendar(endYear, endMonth, 1);
 
         periodEnd.add(Calendar.MONTH, 1);
-        s.refresh(periodStart, periodEnd);
+        s.forceRefresh(periodStart, periodEnd);
 
-        // to account for data not available, just use the first full month
-        periodStart = (Calendar)s.getDataStart().clone();
-        if(s.getDataStart().get(Calendar.DAY_OF_MONTH) > 1){
-            periodStart.add(Calendar.MONTH,1);
-            periodStart.set(Calendar.DAY_OF_MONTH,1);
+        // use the maximum date of the first available full month and calendar start
+        Calendar firstAvailableMonth = (Calendar)s.getDataStart().clone();
+        if(firstAvailableMonth.get(Calendar.DAY_OF_MONTH) > 1){
+            firstAvailableMonth.add(Calendar.MONTH,1);
+            firstAvailableMonth.set(Calendar.DAY_OF_MONTH,1);
         }
-        start = periodStart;
+        if(firstAvailableMonth.after(start))
+            start = firstAvailableMonth;
 
         String var10002 = s.getSymbol();
         MonthlyGainsTable gainsTable = new MonthlyGainsTable(var10002 + " Monthly % Gains", Components.Tables.MonthlyGainsTable.Type.GAINS, s, benchmark, start, end, true, true);
