@@ -43,7 +43,9 @@ public class CumulativeGainsTable extends Table {
             ArrayList fullValues = new ArrayList();
 
             while(yearStart.compareTo(yearEnd) <= 0) {
-                if (!yearStart.isLeapYear(yearStart.get(1)) && yearStart.get(2) == 2 && yearStart.get(5) == 1) {
+                // added fullValues size check for the case when we start on march 1st
+                // this leap year logic only applies when we pass over feb 29th
+                if (fullValues.size() > 0 && !yearStart.isLeapYear(yearStart.get(1)) && yearStart.get(2) == 2 && yearStart.get(5) == 1) {
                     fullDates.add(new GregorianCalendar(2000, 1, 29));
                     fullValues.add((Double)fullValues.get(fullValues.size() - 1));
                 }

@@ -78,6 +78,10 @@ public class Security implements Serializable {
 
         while(var11.hasNext()) {
             HistoricalQuote h = (HistoricalQuote)var11.next();
+
+            // case that values are null
+            if(h.getClose() == null) continue;
+
             dates.add(h.getDate());
             opens.add(h.getOpen().doubleValue());
             highs.add(h.getHigh().doubleValue());

@@ -40,8 +40,7 @@ public class MonthlyGainsTable extends Table {
             SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
 
             for(int i = 0; i < 12; ++i) {
-                Calendar c = Calendar.getInstance();
-                c.set(2, i);
+                Calendar c = new GregorianCalendar(2000,i,1);
                 titleRow.add(monthFormat.format(c.getTime()));
             }
 

@@ -52,6 +52,24 @@ public class CumulativeAveragesTable extends Table {
                 dateString = var10000 + "/" + yearStart.get(5);
                 Double securityResult = cumulativeGains.getCurrentValue(yearStart);
                 Double benchmarkResult = cumulativeBenchmark.getCurrentValue(yearStart);
+
+                // If we cross over the leap year day without hitting it,
+                // we need to add to our sum for 1/29 the value of the previous day close
+                if (!yearStart.isLeapYear(yearStart.get(1)) && yearStart.get(2) == 2 && yearStart.get(5) == 1) {
+                    String leapYearString = "1/29";
+
+                    Double dayBeforeLeapSecurityResult = cumulativeGains.getValue(yearStart);
+                    Double dayBeforeLeapBenchmarkResult = cumulativeBenchmark.getValue(yearStart);
+
+                    Pair<Double, Integer> previousSecurityPair = (Pair)securitySums.getOrDefault(leapYearString, new Pair(0.0D, 0));
+                    Pair<Double, Integer> newSecurityPair = new Pair((Double)previousSecurityPair.getKey() + dayBeforeLeapSecurityResult, (Integer)previousSecurityPair.getValue() + 1);
+                    Pair<Double, Integer> previousBenchmarkPair = (Pair)benchmarkSums.getOrDefault(leapYearString, new Pair(0.0D, 0));
+                    Pair<Double, Integer> newBenchmarkPair = new Pair((Double)previousBenchmarkPair.getKey() + dayBeforeLeapBenchmarkResult, (Integer)previousBenchmarkPair.getValue() + 1);
+
+                    securitySums.put(leapYearString, newSecurityPair);
+                    benchmarkSums.put(leapYearString, newBenchmarkPair);
+                }
+
                 Pair<Double, Integer> previousSecurityPair = (Pair)securitySums.getOrDefault(dateString, new Pair(0.0D, 0));
                 Pair<Double, Integer> newSecurityPair = new Pair((Double)previousSecurityPair.getKey() + securityResult, (Integer)previousSecurityPair.getValue() + 1);
                 Pair<Double, Integer> previousBenchmarkPair = (Pair)benchmarkSums.getOrDefault(dateString, new Pair(0.0D, 0));
@@ -71,15 +89,23 @@ public class CumulativeAveragesTable extends Table {
             yearEnd.add(1, 1);
         }
 
+        // this loop runs for one year or less
         while(yearStart.compareTo(yearEnd) <= 0) {
-            if (!yearStart.isLeapYear(yearStart.get(1)) && yearStart.get(2) == 2 && yearStart.get(5) == 1) {
+
+            // if that start year is not a leap year, we exclude feb 29th from results, so we need to add it below
+            // added security averages size check for the case when we start on march 1st
+            // this leap year logic only applies when we pass over feb 29th
+            if (securityAverages.size() > 0 && !yearStart.isLeapYear(yearStart.get(1)) && yearStart.get(2) == 2 && yearStart.get(5) == 1) {
+                // watch out for this, luckily using 2000 hasn't caused any issues yet
                 dates.add(new GregorianCalendar(2000, 1, 29));
-                securityAverages.add((Double)securityAverages.get(securityAverages.size() - 1));
-                benchmarkAverages.add((Double)benchmarkAverages.get(benchmarkAverages.size() - 1));
+                String leapYearString = "1/29";
+                securityAverages.add((Double)((Pair)securitySums.get(leapYearString)).getKey() / (double)(Integer)((Pair)securitySums.get(leapYearString)).getValue());
+                benchmarkAverages.add((Double)((Pair)benchmarkSums.get(leapYearString)).getKey() / (double)(Integer)((Pair)benchmarkSums.get(leapYearString)).getValue());
             }
 
             var10000 = yearStart.get(2);
             dateString = var10000 + "/" + yearStart.get(5);
+
             dates.add((Calendar)yearStart.clone());
             securityAverages.add((Double)((Pair)securitySums.get(dateString)).getKey() / (double)(Integer)((Pair)securitySums.get(dateString)).getValue());
             benchmarkAverages.add((Double)((Pair)benchmarkSums.get(dateString)).getKey() / (double)(Integer)((Pair)benchmarkSums.get(dateString)).getValue());
