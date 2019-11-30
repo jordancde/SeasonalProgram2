@@ -138,7 +138,7 @@ public class Table {
     }
 
     public Double round(Double d) {
-        return d == null ? 0.0D : (double)Math.round(d * 10000.0D) / 10000.0D;
+        return d == null ? 0.0D : (double)Math.round(d * 100000.0D) / 100000.0D;
     }
 
     public String toString() {

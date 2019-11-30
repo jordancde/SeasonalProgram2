@@ -73,7 +73,7 @@ public class Series implements Serializable {
     }
 
     public Double round(Double d) {
-        return (double)Math.round(d * 10000.0D) / 10000.0D;
+        return (double)Math.round(d * 100000.0D) / 100000.0D;
     }
 
     public List<Calendar> getDates() {
