@@ -70,7 +70,7 @@ public class MovingAverageIndicator extends Indicator {
                 Series relCloses = this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses());
                 return this.getEMA(relCloses, start, end, this.period);
             case RSI:
-                return this.getRSI(this.security.getCloses().trim(this.start, this.end));
+                return this.getRSI(this.security.getCloses());
             case RSI_REL:
                 return this.getRSI(this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses()));
             default:
