@@ -20,11 +20,11 @@ import yahoofinance.histquotes.Interval;
 public class Security implements Serializable {
     private static final long serialVersionUID = 2L;
     boolean selected;
-    Series opens;
-    Series highs;
-    Series closes;
-    Series lows;
-    Series volumes;
+    transient Series opens;
+    transient Series highs;
+    transient Series closes;
+    transient Series lows;
+    transient Series volumes;
     boolean usingAdjustedCloses;
     private transient StringProperty symbol;
 
