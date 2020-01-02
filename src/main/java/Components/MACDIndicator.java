@@ -22,25 +22,25 @@ public class MACDIndicator extends Indicator {
 
     public List<Series> getMACD() throws SymbolInvalidException, InvalidInputException {
 
-        Series slowEMA = this.getEMA(this.security.getCloses(), start, end, this.slow);
+        Series slowEMA = getEMA(security.getCloses(), slow);
         slowEMA.name = "MACD slow EMA";
 
-        Series fastEMA = this.getEMA(this.security.getCloses(), start, end, this.fast);
+        Series fastEMA = getEMA(security.getCloses(), fast);
         fastEMA.name = "MACD fast EMA";
 
         Series MACD = fastEMA.getDiffVs(slowEMA);
-        MACD.name = "MACD (" + this.fast + " " + this.slow + ")";
+        MACD.name = "MACD (" + fast + " " + slow + ")";
 
-        Series signal = this.getEMA(MACD, start, end, this.signal);
-        signal.name = "MACD Signal (" + this.signal + ")";
+        Series signalSeries = getEMA(MACD, signal);
+        signalSeries.name = "MACD Signal (" + signal + ")";
 
-        Series histogram = MACD.getDiffVs(signal);
+        Series histogram = MACD.getDiffVs(signalSeries);
         histogram.name = "MACD Histogram";
 
         List<Series> series = new ArrayList();
-        series.add(MACD);
-        series.add(signal);
-        series.add(histogram);
+        series.add(MACD.trim(start, end));
+        series.add(signalSeries.trim(start, end));
+        series.add(histogram.trim(start, end));
         return series;
     }
 }

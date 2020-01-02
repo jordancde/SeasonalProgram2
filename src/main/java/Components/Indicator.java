@@ -57,10 +57,10 @@ public class Indicator {
        return new Series("SMA ("+period+") "+input.getName(),input.getDates(),values);
     }
 
-    Series getEMA(Series input, Calendar start, Calendar end, int period) throws InvalidInputException {
-        Series trimmedInput = input.trim(start,end,EMA_OFFSET);
+    Series getEMA(Series input, int period) {
+        input = input.removeNulls();
 
-        List<Double> inputValues = trimmedInput.getValues();
+        List<Double> inputValues = input.getValues();
 
         List<Double> values = new ArrayList();
         Double previousEMA = 0.0;
@@ -81,7 +81,7 @@ public class Indicator {
             values.add(previousEMA);
         }
 
-        return new Series("EMA ("+period+") "+input.getName(),trimmedInput.getDates(),values);
+        return new Series("EMA ("+period+") "+input.getName(),input.getDates(),values);
     }
 
     static Double calculateSD(List<Double> numArray) {

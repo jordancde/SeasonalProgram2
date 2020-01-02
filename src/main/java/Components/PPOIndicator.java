@@ -19,23 +19,23 @@ public class PPOIndicator extends Indicator {
     }
 
     public List<Series> getPPO() throws SymbolInvalidException, InvalidInputException {
-        Series slowEMA = this.getEMA(this.security.getCloses(), this.start, this.end, this.slow);
+        Series slowEMA = getEMA(security.getCloses(), slow);
         slowEMA.name = "PPO slow EMA";
-        Series fastEMA = this.getEMA(this.security.getCloses(), this.start, this.end, this.fast);
+        Series fastEMA = getEMA(security.getCloses(), fast);
         fastEMA.name = "PPO fast EMA";
 
         Series PPO = fastEMA.getDiffVs(slowEMA).getRatioVs(slowEMA);
-        PPO.name = "PPO (" + this.fast + " " + this.slow + ")";
+        PPO.name = "PPO (" + fast + " " + slow + ")";
 
-        Series signal = this.getEMA(PPO, start, end, this.signal);
-        signal.name = "PPO Signal (" + this.signal + ")";
+        Series signalSeries = getEMA(PPO, signal).trim(start, end);
+        signalSeries.name = "PPO Signal (" + signal + ")";
 
-        Series histogram = PPO.getDiffVs(signal);
+        Series histogram = PPO.trim(start, end).getDiffVs(signalSeries);
 
         histogram.name = "PPO Histogram";
         List<Series> series = new ArrayList();
         series.add(PPO);
-        series.add(signal);
+        series.add(signalSeries);
         series.add(histogram);
         return series;
     }

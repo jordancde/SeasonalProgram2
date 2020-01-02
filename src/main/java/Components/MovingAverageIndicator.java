@@ -62,13 +62,13 @@ public class MovingAverageIndicator extends Indicator {
             case SIMPLE:
                 return this.getSMA(this.security.getCloses(), this.period);
             case EMA:
-                return this.getEMA(this.security.getCloses(), this.start, this.end, this.period);
+                return this.getEMA(this.security.getCloses(), this.period);
             case SIMPLE_REL:
                 Series relative = this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses());
                 return this.getSMA(relative, this.period);
             case EMA_REL:
                 Series relCloses = this.security.getCloses().getRelativePerformanceVs(this.benchmark.getCloses());
-                return this.getEMA(relCloses, start, end, this.period);
+                return this.getEMA(relCloses, this.period);
             case RSI:
                 return this.getRSI(this.security.getCloses());
             case RSI_REL:

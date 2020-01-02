@@ -377,4 +377,17 @@ public class Series implements Serializable {
 
         return new Series(this.name, outputDates, outputValues);
     }
+
+    public Series removeNulls() {
+        ArrayList<Calendar> newDates = new ArrayList();
+        ArrayList<Double> newValues = new ArrayList();
+
+        for(int i = 0;i < values.size(); i++){
+            if(values.get(i) == null) continue;
+            newValues.add(values.get(i));
+            newDates.add(dates.get(i));
+        }
+
+        return new Series(name, newDates, newValues);
+    }
 }
