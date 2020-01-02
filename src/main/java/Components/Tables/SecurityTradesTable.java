@@ -34,7 +34,7 @@ public class SecurityTradesTable extends Table {
 
         while(var8.hasNext()) {
             Trade t = (Trade)var8.next();
-            this.addTableRight(new TradeTable(t, i++ == 0), 1);
+            this.addTableRight(new TradeTable(t, true), 1);
             this.addColumn();
             securitySeries.add(t.getGains());
             benchmarkSeries.add(t.getBenchmarkGains());

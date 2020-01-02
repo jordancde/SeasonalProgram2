@@ -861,8 +861,8 @@ public class Controller {
                     if (t.getNumPeriods() != numPeriods)
                         throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid number of periods. All trades for a security must have the same number of periods.");
 
-                    if (t.getStartCal().get(1) != startYear)
-                        throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid entry year. All trades for a security must have the same entry year.");
+                    //if (t.getStartCal().get(1) != startYear)
+                     //   throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid entry year. All trades for a security must have the same entry year.");
 
                     if (t.getStartCal().compareTo(t.getEndCal()) > 0)
                         throw new InvalidInputException("Trade " + t.getSecurity().getSymbol() + " with entry " + t.getStart() + " has an invalid entry date. All trades must have entry preceding exit.");
